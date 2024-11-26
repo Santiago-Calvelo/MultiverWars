@@ -16,7 +16,11 @@ public class ServerThread extends Thread {
     private String specialChar = "!";
     private final int MAX_CLIENTS = 2;
     private int clientsConnected = 0;
+    private int clientsReady;
     private Client[] clients = new Client[MAX_CLIENTS];
+
+    private String map;
+    private String difficulty;
 
     public ServerThread() {
         try {
@@ -64,19 +68,28 @@ public class ServerThread extends Thread {
         }
 
         if(clientsConnected == MAX_CLIENTS) {
-            String map;
             switch (parts[0]) {
                 case "mapselected":
                     map = parts[1];
                     sendMessageToAll("mapselected!" + map);
                     break;
                 case "difficultyselected":
-                    map = parts[1];
-                    String difficulty = parts[2];
+                    difficulty = parts[1];
                     sendMessageToAll("createmap!" + map + "!" + difficulty);
-                    GameData.networkListener.createMap(map,difficulty);
                     break;
-
+                case "readyforgame":
+                    clientsReady++;
+                    if (clientsReady == clientsConnected) {
+                        GameData.networkListener.createMap(map,difficulty);
+                    }
+                    break;
+                case "spawntower":
+                    float x = Float.parseFloat(parts[2]);
+                    float y = Float.parseFloat(parts[3]);
+                    float cardWidth = Float.parseFloat(parts[4]);
+                    float cardHeight = Float.parseFloat(parts[5]);
+                    GameData.networkListener.spawnTower(parts[1],x,y,cardWidth,cardHeight);
+                    break;
             }
         }
 

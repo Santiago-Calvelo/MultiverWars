@@ -171,10 +171,8 @@ public class EntityManager {
             spawnEntity(enemyType, x, y);
             spawnAccumulator = 0;
             enemiesInGame++;
-            System.out.println("Ingresé al primer if");
         } else if (enemiesInGame == 0 && !bossIsAlive) {
             currentRoundIndex++;
-            System.out.println("Sumando...");
             scaleStatsAllPlacedCharacters();
         }
 

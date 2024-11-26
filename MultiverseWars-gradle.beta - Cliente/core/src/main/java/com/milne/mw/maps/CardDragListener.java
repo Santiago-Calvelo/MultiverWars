@@ -6,17 +6,16 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.milne.mw.entities.EntityManager;
 import com.milne.mw.entities.EntityType;
+import com.milne.mw.globals.NetworkData;
 
 public class CardDragListener extends InputListener {
-    private final EntityManager entityManager;
-    private final EntityType entityType;
+    private final String entityType;
     private final Image cardImage;
     private float originalX;
     private float originalY;
     private boolean isDragging = false;
 
-    public CardDragListener(EntityManager entityManager, EntityType entityType, Image cardImage) {
-        this.entityManager = entityManager;
+    public CardDragListener(String entityType, Image cardImage) {
         this.entityType = entityType;
         this.cardImage = cardImage;
 
@@ -46,7 +45,8 @@ public class CardDragListener extends InputListener {
         if (isDragging) {
             float cardX = cardImage.getX();
             float cardY = cardImage.getY();
-            entityManager.handleEntityPlacement(entityType, cardX, cardY, cardImage.getWidth(), cardImage.getHeight());
+           // entityManager.handleEntityPlacement(entityType, cardX, cardY, cardImage.getWidth(), cardImage.getHeight());
+            NetworkData.clientThread.sendMessage("spawntower!" + entityType + "!" + cardX + "!" + cardY + "!" + cardImage.getWidth() + "!" + cardImage.getHeight());
             cardImage.setPosition(originalX, originalY);
             isDragging = false;
         }

@@ -18,7 +18,6 @@ import com.milne.mw.globals.NetworkData;
 import com.milne.mw.maps.MapScreen;
 import com.milne.mw.screens.MainMenuScreen;
 
-import static com.milne.mw.globals.Global.loadTexture;
 
 public class DifficultySelectionScreen implements Screen {
 
@@ -34,7 +33,7 @@ public class DifficultySelectionScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        backgroundTexture = loadTexture("difficulty/DIFICULTAD UN JUGADOR.jpg");
+        backgroundTexture = Global.loadTexture("difficulty/DIFICULTAD UN JUGADOR.jpg");
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setSize(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
         stage.addActor(backgroundImage);
@@ -84,7 +83,7 @@ public class DifficultySelectionScreen implements Screen {
 
     private void startGameWithDifficulty(Difficulty difficultyLevel) {
         if (Global.multiplayer) {
-            NetworkData.clientThread.sendMessage("difficultyselected!" + map + "!" + difficultyLevel.name());
+            NetworkData.clientThread.sendMessage("difficultyselected!" + difficultyLevel.name());
         } else {
             MapScreen mapScreen = new MapScreen(map, difficultyLevel);
             GameData.game.setScreen(mapScreen);

@@ -2,7 +2,7 @@ package com.milne.mw.maps;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -10,13 +10,13 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.milne.mw.difficulty.Difficulty;
 import com.milne.mw.entities.SellTowerListener;
 import com.milne.mw.globals.Global;
+import com.milne.mw.globals.NetworkData;
 import com.milne.mw.menu.GameOverMenu;
 import com.milne.mw.menu.PauseMenu;
 import com.milne.mw.menu.VictoryMenu;
 import com.milne.mw.player.Player;
 import com.milne.mw.renders.RenderManager;
 import com.milne.mw.entities.EntityManager;
-import com.milne.mw.entities.EntityType;
 import com.milne.mw.MusicManager;
 
 public class MapScreen implements Screen {
@@ -39,7 +39,6 @@ public class MapScreen implements Screen {
         victoryMenu = new VictoryMenu(stage, pauseMenu);
         gameOverMenu = new GameOverMenu(stage, pauseMenu, entityManager);
 
-        addEntityCardsToPanel();
         entityManager.startEnemySpawner();
         entityManager.setVictoryMenu(victoryMenu);
         entityManager.setGameOverMenu(gameOverMenu);
@@ -48,35 +47,33 @@ public class MapScreen implements Screen {
         renderManager.setPlayer(player);
         renderManager.setMaxRound(difficultyLevel.getMaxRound());
         renderManager.initializeLabels(entityManager.getRound());
+
+        readyForGame();
     }
 
-    public void spawnEntity(int id, float x, float y, String entityImage, int hitboxWidth, int hitboxHeight) {
+    public void readyForGame() {
+        NetworkData.clientThread.sendMessage("readyforgame!");
+    }
+
+    public void spawnEntity(int id, float x, float y, String entityImage, float hitboxWidth, float hitboxHeight) {
+        System.out.println("Spawneando entidad en " + x + " " + y);
         Image entity = new Image(Global.loadTexture(entityImage));
         entity.setSize(hitboxWidth, hitboxHeight);
         entity.setPosition(x,y);
         stage.addActor(entity);
     }
 
-    private void addEntityCardsToPanel() {
-        float xPos = 97;
-        float yPos = stage.getViewport().getWorldHeight() - 82.5f;
+    public void addCardsToPanel(String cardImage, float x, float y, int width, int height, String entityType) {
+        System.out.println("Agregando carta");
+        Image card = new Image(Global.loadTexture(cardImage));
 
-        for (EntityType entityType : EntityType.values()) {
-            if (entityType.getCardTexture() != null) {
-                final Image cardImage = new Image(entityType.getCardTexture());
-                cardImage.setSize(60, 80);
-                cardImage.setPosition(xPos, yPos);
+        card.setSize(width,height);
+        card.setPosition(x,y);
 
-                CardDragListener listener = new CardDragListener(entityManager, entityType, cardImage);
-                cardImage.addListener(listener);
+        CardDragListener cardDragListener = new CardDragListener(entityType,card);
+        card.addListener(cardDragListener);
+        stage.addActor(card);
 
-                if (cardImage.getParent() == null) {
-                    stage.addActor(cardImage);
-                }
-
-                xPos += 70; // Incrementamos la posición para la siguiente carta
-            }
-        }
     }
 
 
@@ -87,7 +84,8 @@ public class MapScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        stage.act();
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.act(delta);
         stage.draw();
         if (Gdx.input.justTouched()) {
             float touchX = Gdx.input.getX();
@@ -136,4 +134,5 @@ public class MapScreen implements Screen {
             RenderManager.resetInstance(); // Libera recursos del RenderManager
         }
     }
+
 }

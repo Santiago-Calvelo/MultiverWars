@@ -132,7 +132,7 @@ public enum EntityType {
     };
 
     // Atributos
-    private Texture cardTexture;
+    private String cardTexture;
     private String texturePath;
     private String walk1Path, walk2Path;
     private String attack1Path, attack2Path;
@@ -147,7 +147,7 @@ public enum EntityType {
     // Constructor
     EntityType(String cardTexturePath, String walk1Path, String walk2Path, String attack1Path, String attack2Path, String projectilePath, int lives, String type, boolean canBeSpawned, boolean canBeAttacked, int hitboxWidth, int hitboxHeight, int speed, int range, float attackCooldown, int damage, int energy, int damageToPlayer) {
         if (cardTexturePath != null) {
-            this.cardTexture = new Texture(Gdx.files.internal(cardTexturePath));
+            this.cardTexture = cardTexturePath;
         }
         this.texturePath = walk1Path;
         this.walk1Path = walk1Path;
@@ -172,7 +172,7 @@ public enum EntityType {
     // Constructor alternativo para entidades sin proyectil
     EntityType(String cardTexturePath, String walk1Path, String walk2Path, String attack1Path, String attack2Path, int lives, String type, boolean canBeSpawned, boolean canBeAttacked, int hitboxWidth, int hitboxHeight, int speed, float attackCooldown, int damage, int energy, SpecialAttack specialAttack, int damageToPlayer) {
         if (cardTexturePath != null) {
-            this.cardTexture = new Texture(Gdx.files.internal(cardTexturePath));
+            this.cardTexture = cardTexturePath;
         }
         this.texturePath = walk1Path;
         this.attack1Path = attack1Path;
@@ -195,7 +195,7 @@ public enum EntityType {
 
     EntityType(String cardTexturePath, String walkPath, String attackPath, int lives, String type, boolean canBeSpawned, boolean canBeAttacked, int hitboxWidth, int hitboxHeight, int speed, float attackCooldown, int damage, int energy) {
         if (cardTexturePath != null) {
-            this.cardTexture = new Texture(Gdx.files.internal(cardTexturePath));
+            this.cardTexture = cardTexturePath;
         }
         this.texturePath = walkPath;
         this.attack1Path = attackPath;
@@ -215,7 +215,7 @@ public enum EntityType {
     public abstract Character getEntity(float x, float y, EntityManager entityManager);
 
     public boolean getCanBeSpawned() { return canBeSpawned; }
-    public Texture getCardTexture() { return cardTexture; }
+    public String getCardTexture() { return cardTexture; }
     public String getTexturePath() { return texturePath; }
     public String getWalk1Path() { return walk1Path; }
     public String getWalk2Path() { return walk2Path; }

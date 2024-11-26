@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.milne.mw.difficulty.Difficulty;
 import com.milne.mw.entities.SellTowerListener;
+import com.milne.mw.globals.Global;
+import com.milne.mw.globals.NetworkData;
 import com.milne.mw.menu.GameOverMenu;
 import com.milne.mw.menu.PauseMenu;
 import com.milne.mw.menu.VictoryMenu;
@@ -55,15 +57,19 @@ public class MapScreen implements Screen {
 
         for (EntityType entityType : EntityType.values()) {
             if (entityType.getCardTexture() != null) {
-                final Image cardImage = new Image(entityType.getCardTexture());
-                cardImage.setSize(60, 80);
-                cardImage.setPosition(xPos, yPos);
+                if (Global.multiplayer) {
+                    NetworkData.serverThread.sendMessageToAll("addcards!" + entityType.getCardTexture() + "!" + xPos + "!" + yPos + "!" + 60 + "!" + 80 + "!" + entityType.name());
+                } else {
+                    final Image cardImage = new Image(Global.loadTexture(entityType.getCardTexture()));
+                    cardImage.setSize(60, 80);
+                    cardImage.setPosition(xPos, yPos);
 
-                CardDragListener listener = new CardDragListener(entityManager, entityType, cardImage);
-                cardImage.addListener(listener);
+                    CardDragListener listener = new CardDragListener(entityManager, entityType, cardImage);
+                    cardImage.addListener(listener);
 
-                if (cardImage.getParent() == null) {
-                    stage.addActor(cardImage);
+                    if (cardImage.getParent() == null) {
+                        stage.addActor(cardImage);
+                    }
                 }
 
                 xPos += 70; // Incrementamos la posición para la siguiente carta

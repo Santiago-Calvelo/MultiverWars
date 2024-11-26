@@ -38,8 +38,10 @@ public class ClientThread extends Thread {
 
     private void processMessage(DatagramPacket packet) {
         String message = new String(packet.getData()).trim();
-//        System.out.println("Mensaje recibido: " + message);
+        System.out.println("Mensaje recibido: " + message);
         String[] parts = message.split(specialChar);
+        float x;
+        float y;
 
         switch(parts[0]){
             case "connection":
@@ -54,12 +56,20 @@ public class ClientThread extends Thread {
             case "createmap":
                 GameData.networkListener.createMap(parts[1],parts[2]);
                 break;
+            case "addcards":
+                String cardImage = parts[1];
+                x = Float.parseFloat(parts[2]);
+                y = Float.parseFloat(parts[3]);
+                int width = Integer.parseInt(parts[4]);
+                int height = Integer.parseInt(parts[5]);
+                GameData.networkListener.addCardsToPanel(cardImage,x,y,width,height,parts[6]);
+                break;
             case "spawnentity":
                 int id = Integer.parseInt(parts[1]);
-                float x = Float.parseFloat(parts[2]);
-                float y = Float.parseFloat(parts[3]);
-                int hitboxWidth = Integer.parseInt(parts[5]);
-                int hitboxHeight = Integer.parseInt(parts[6]);
+                x = Float.parseFloat(parts[2]);
+                y = Float.parseFloat(parts[3]);
+                float hitboxWidth = Float.parseFloat(parts[5]);
+                float hitboxHeight = Float.parseFloat(parts[6]);
                 GameData.networkListener.spawnentity(id,x,y,parts[4],hitboxWidth,hitboxHeight);
                 break;
             case "position":

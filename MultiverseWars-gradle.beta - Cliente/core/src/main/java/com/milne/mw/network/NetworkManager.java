@@ -32,12 +32,26 @@ public class NetworkManager implements NetworkListener {
     }
 
     @Override
-    public void spawnentity(int id, float x, float y, String entityImage, int hitboxWidth, int hitboxHeight) {
+    public void spawnentity(int id, float x, float y, String entityImage, float hitboxWidth, float hitboxHeight) {
         if (GameData.game.getScreen() instanceof MapScreen) {
             mapScreen = (MapScreen) GameData.game.getScreen();
+            System.out.println("Ingrese al if");
             Gdx.app.postRunnable(() -> {
                 mapScreen.spawnEntity(id,x,y,entityImage,hitboxWidth,hitboxHeight);
             });
         }
+    }
+
+    @Override
+    public void addCardsToPanel(String cardImage, float x, float y, int width, int height, String entityType) {
+        System.out.println(GameData.game.getScreen());
+        if (GameData.game.getScreen() instanceof MapScreen) {
+            mapScreen = (MapScreen) GameData.game.getScreen();
+            System.out.println("Ingrese al if");
+            Gdx.app.postRunnable(() -> {
+                mapScreen.addCardsToPanel(cardImage,x,y,width,height,entityType);
+            });
+        }
+
     }
 }

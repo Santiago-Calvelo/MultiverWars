@@ -18,4 +18,9 @@ public class NetworkManager implements NetworkListener {
     public void endGame() {
 
     }
+
+    @Override
+    public void spawnTower(String entityType, float x, float y, float cardWidth, float cardHeight) {
+
+    }
 }
