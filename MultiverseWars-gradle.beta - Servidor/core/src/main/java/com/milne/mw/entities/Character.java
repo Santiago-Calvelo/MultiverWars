@@ -6,9 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.milne.mw.difficulty.Difficulty;
 import com.milne.mw.entities.flycharacter.FlyCharacter;
-import com.milne.mw.globals.GameData;
 import com.milne.mw.globals.Global;
 import com.milne.mw.globals.NetworkData;
 import com.milne.mw.renders.RenderManager;
@@ -29,7 +27,7 @@ public abstract class Character {
     private float cooldownElapsed;
     private final String TYPE;
     private int damage, energy;
-    private final int BASE_LIVES, BASE_SPEED, BASE_DAMAGE;
+    private int baseLives, baseSpeed, baseDamage;
     private int lastScaledRound = -1;
     private final boolean canBeAttacked;
     private int damageToPlayer;
@@ -51,7 +49,7 @@ public abstract class Character {
         }
         this.HITBOX = new Rectangle(x, y, hitboxWidth, hitboxHeight);
         this.lives = lives;
-        this.BASE_LIVES = lives;
+        this.baseLives = lives;
         this.entityManager = entityManager;
         this.walk1Texture = walk1Texture;
         this.walk2Texture = walk2Texture;
@@ -59,13 +57,13 @@ public abstract class Character {
         this.attack2Texture = attack2Texture;
         this.isMoving = false;
         this.speed = speed;
-        this.BASE_SPEED = speed;
+        this.baseSpeed = speed;
         this.TYPE = type;
         this.canAttack = false;
         this.attackCooldown = attackCooldown;
         this.cooldownElapsed = 0;
         this.damage = damage;
-        this.BASE_DAMAGE = damage;
+        this.baseDamage = damage;
         this.energy = energy;
         this.canBeAttacked = canBeAttacked;
         this.damageToPlayer = damageToPlayer;
@@ -98,9 +96,9 @@ public abstract class Character {
     }
 
     public void scaleStatsBoss(float scalingFactor) {
-        this.lives += Math.round(BASE_LIVES * scalingFactor);
-        this.damage += Math.round(BASE_DAMAGE * scalingFactor);
-        this.speed += Math.round(BASE_SPEED * Math.min(scalingFactor, 1.05f));
+        this.baseLives += Math.round(baseLives * scalingFactor);
+        this.baseDamage += Math.round(baseDamage * scalingFactor);
+        this.baseSpeed += Math.round(baseSpeed * Math.min(scalingFactor, 1.05f));
         System.out.println("Scale stats boss: " + lives + " " + damage);
     }
 
@@ -110,10 +108,10 @@ public abstract class Character {
 
             float multiplier = 1.0f + (roundNumber * scalingFactor);
             if (!this.getType().equalsIgnoreCase("tower")) {
-                this.lives = Math.round(BASE_LIVES * multiplier);
+                this.lives = Math.round(baseLives * multiplier);
             }
-            this.damage = Math.round(BASE_DAMAGE * multiplier);
-            this.speed = Math.round(BASE_SPEED * Math.min(multiplier, 1.05f));
+            this.damage = Math.round(baseDamage * multiplier);
+            this.speed = Math.round(baseSpeed * Math.min(multiplier, 1.05f));
             System.out.println("Scale stats: " + lives + " " + damage);
         }
     }
@@ -153,7 +151,7 @@ public abstract class Character {
     }
 
     public void resumeMovement() {
-        if (!isMoving && BASE_SPEED != 0) {
+        if (!isMoving && baseSpeed != 0) {
             startMovement();
         }
     }
@@ -196,8 +194,8 @@ public abstract class Character {
         return LEFT_LIMIT;
     }
 
-    public int getBASE_SPEED() {
-        return BASE_SPEED;
+    public int getBaseSpeed() {
+        return baseSpeed;
     }
 
     public int getDamage() { return damage; }

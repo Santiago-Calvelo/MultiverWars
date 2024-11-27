@@ -80,6 +80,13 @@ public class NetworkManager implements NetworkListener {
     }
 
     @Override
+    public void exploteBomb(int id, float x, float y, String explosionPath, float width, float height) {
+        Gdx.app.postRunnable(() -> {
+            this.mapScreen.exploteBomb(id,x,y,explosionPath,width,height);
+        });
+    }
+
+    @Override
     public void updateRound(int currentRound, int maxRound) {
         Gdx.app.postRunnable(() -> {
             this.mapScreen.getRenderManager().updateRoundLabels(currentRound,maxRound);
@@ -118,6 +125,21 @@ public class NetworkManager implements NetworkListener {
     public void win() {
         Gdx.app.postRunnable(() -> {
             this.mapScreen.createVictoryMenu();
+        });
+    }
+
+    @Override
+    public void endGame() {
+        Gdx.app.postRunnable(() -> {
+            NetworkData.clientThread.end();
+            NetworkData.clientThread = null;
+            this.mapScreen = null;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            GameData.game.setScreen(new MainMenuScreen());
         });
     }
 

@@ -1,9 +1,9 @@
 package com.milne.mw.difficulty;
 
 public enum Difficulty {
-    EASY(0.01f,0,6f, 1000, 750, 1f, 1000, 1f, 2, 3f, 1, 15, 1f, 15f, 10f, 10f, 0.025f),
-    MEDIUM(0.03f,15,4f, 133, 50, 0.5f, 1500, 2f, 3, 4f, 2, 10, 1.5f, 12f, 8f, 6f, 0.035f),
-    HARD(0.05f,20,2f, 75, 25, 0.25f, 2000, 2.5f, 7, 2f, 4, 18, 1f, 10f, 8f, 5f, 0.050f);
+    EASY(0.01f,10,6f, 100, 75, 1f, 1000, 1f, 2, 3f, 1, 15, 1f, 15f, 10f, 10f, 0.025f),
+    MEDIUM(0.03f,15,4f, 70, 50, 0.5f, 1500, 2f, 3, 4f, 2, 10, 1.5f, 12f, 8f, 6f, 0.035f),
+    HARD(0.05f,20,2f, 50, 25, 0.25f, 2000, 2.5f, 7, 2f, 4, 18, 1f, 10f, 8f, 5f, 0.050f);
 
     private final float scalingFactor;
     private final int maxRound;

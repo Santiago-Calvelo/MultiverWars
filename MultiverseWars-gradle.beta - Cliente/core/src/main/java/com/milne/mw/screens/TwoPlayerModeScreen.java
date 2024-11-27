@@ -25,7 +25,7 @@ public class TwoPlayerModeScreen implements Screen {
         this.stage = new Stage(new FitViewport(800, 600));
         Gdx.input.setInputProcessor(stage);
 
-        backgroundTexture = loadTexture("difficulty/DIFICULTAD DOS JUGADORES.jpg");
+        backgroundTexture = loadTexture("multiverse-wars/playerscreen.jpg");
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setSize(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
         stage.addActor(backgroundImage);
@@ -49,6 +49,7 @@ public class TwoPlayerModeScreen implements Screen {
         stage.draw();
 
         if (Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
+            NetworkData.clientThread.sendMessage("disconnect!" + GameData.clientNumber);
             NetworkData.clientThread.end();
             NetworkData.clientThread = null;
             GameData.game.setScreen(new MainMenuScreen());

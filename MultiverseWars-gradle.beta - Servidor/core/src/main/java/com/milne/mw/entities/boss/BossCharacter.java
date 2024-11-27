@@ -155,7 +155,7 @@ public class BossCharacter extends Character {
 
     public void resetAll() {
         this.isDashing = false;
-        this.setSpeed(getBASE_SPEED());
+        this.setSpeed(getBaseSpeed());
         this.forceSmashAccumulator = 0f;
         this.moveForceAccumulator = 0f;
         this.dashAttackAccumulator = 0f;

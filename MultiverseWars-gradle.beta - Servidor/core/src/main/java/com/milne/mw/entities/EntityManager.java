@@ -53,7 +53,7 @@ public class EntityManager {
     private float enemiesSpawnAccumulator = 0;
     private float bossScalingFactor;
     private int numberPlayer;
-    private int id = 0;
+    private Array<Integer> ids = new Array<>();
 
     public EntityManager(Stage stage, Difficulty difficultyLevel, Player player) {
         this.stage = stage;
@@ -91,6 +91,21 @@ public class EntityManager {
         }
     }
 
+    public int randomId() {
+        int id = 0;
+        Random r = new Random();
+        boolean isNotExist = false;
+        do {
+            id = r.nextInt(2001);
+            if (!ids.contains(id,true)) {
+                ids.add(id);
+                isNotExist = true;
+            }
+        } while (!isNotExist);
+
+        return id;
+    }
+
     public void handleEntityPlacement(EntityType entityType, float x, float y, float cardWidth, float cardHeight) {
         boolean placed = false;
         int i = 0;
@@ -117,17 +132,19 @@ public class EntityManager {
     }
 
     public Character spawnEntity(EntityType entityType, float x, float y) {
+
         float adjustedX = x - (float) entityType.getHitboxWidth() / 2;
         float adjustedY = y - (float) entityType.getHitboxHeight() / 2;
 
         Character entity = entityType.getEntity(adjustedX, adjustedY, this);
-        entity.scaleStats(difficultyLevel.getScalingFactor(), currentRoundIndex);
+        if (!bossIsAlive) {
+            entity.scaleStats(difficultyLevel.getScalingFactor(), currentRoundIndex);
+        }
         characters.add(entity);
         String entityImage = entityType.getTexturePath();
         if (Global.multiplayer) {
-            NetworkData.serverThread.sendMessageToAll("spawnentity!" + id + "!" + adjustedX + "!" + adjustedY + "!" + entityImage + "!" + entity.getImage().getWidth() + "!" + entity.getImage().getHeight());
-            entity.setId(id);
-            id++;
+            entity.setId(randomId());
+            NetworkData.serverThread.sendMessageToAll("spawnentity!" + entity.getId() + "!" + adjustedX + "!" + adjustedY + "!" + entityImage + "!" + entity.getImage().getWidth() + "!" + entity.getImage().getHeight());
         }
         entity.getImage().setPosition(adjustedX, adjustedY);
         stage.addActor(entity.getImage());
@@ -137,9 +154,8 @@ public class EntityManager {
 
     public void spawnBossFinal(Character bossFinal, float x, float y) {
         if (Global.multiplayer) {
-            NetworkData.serverThread.sendMessageToAll("spawnentity!" + id + "!" + x + "!" + y + "!" + bossFinal.getImageDirection() + "!" + bossFinal.getHitbox().width + "!" + bossFinal.getHitbox().height);
-            bossFinal.setId(id);
-            id++;
+            bossFinal.setId(randomId());
+            NetworkData.serverThread.sendMessageToAll("spawnentity!" + bossFinal.getId() + "!" + x + "!" + y + "!" + bossFinal.getImageDirection() + "!" + bossFinal.getHitbox().width + "!" + bossFinal.getHitbox().height);
         }
         bossFinal.getImage().setPosition(x, y);
         stage.addActor(bossFinal.getImage());
@@ -148,9 +164,8 @@ public class EntityManager {
 
     public void addProjectile(Projectile projectile) {
         if (Global.multiplayer) {
-            NetworkData.serverThread.sendMessageToAll("spawnentity!" + id + "!" + projectile.getHitbox().x + "!" + projectile.getHitbox().y + "!" + projectile.getTexture() + "!" + projectile.getHitbox().getWidth() + "!" + projectile.getHitbox().getHeight());
-            projectile.setId(id);
-            id++;
+            projectile.setId(randomId());
+            NetworkData.serverThread.sendMessageToAll("spawnentity!" + projectile.getId() + "!" + projectile.getHitbox().x + "!" + projectile.getHitbox().y + "!" + projectile.getTexture() + "!" + projectile.getHitbox().getWidth() + "!" + projectile.getHitbox().getHeight());
         }
         projectiles.add(projectile);
         stage.addActor(projectile.getImage());
@@ -159,9 +174,8 @@ public class EntityManager {
     public void addBomb(Bomb bomb) {
         if (!bombs.contains(bomb, true)) {
             if (Global.multiplayer) {
-                NetworkData.serverThread.sendMessageToAll("spawnentity!" + id + "!" + bomb.getExplosionRange().x + "!" + bomb.getExplosionRange().y + "!" + bomb.getTexture() + "!" + bomb.getImage().getWidth() + "!" + bomb.getImage().getHeight());
-                bomb.setId(id);
-                id++;
+                bomb.setId(randomId());
+                NetworkData.serverThread.sendMessageToAll("spawnentity!" + bomb.getId() + "!" + bomb.getExplosionRange().x + "!" + bomb.getExplosionRange().y + "!" + bomb.getTexture() + "!" + bomb.getImage().getWidth() + "!" + bomb.getImage().getHeight());
             }
             bombs.add(bomb);
             stage.addActor(bomb.getImage()); // Añadir la imagen de la bomba al escenario
@@ -171,6 +185,7 @@ public class EntityManager {
     public void removeBomb(Bomb bomb) {
         if (Global.multiplayer) {
             NetworkData.serverThread.sendMessageToAll("removeentity!" + bomb.getId());
+            ids.removeValue(bomb.getId(), true);
         }
         bombs.removeValue(bomb, true);
         stage.getActors().removeValue(bomb.getImage(), true);
@@ -180,6 +195,7 @@ public class EntityManager {
     public void removeProjectile(Projectile projectile) {
         if (Global.multiplayer) {
             NetworkData.serverThread.sendMessageToAll("removeentity!" + projectile.getId());
+            ids.removeValue(projectile.getId(),true);
         }
         projectiles.removeValue(projectile, true);
         stage.getActors().removeValue(projectile.getImage(), true);
@@ -447,6 +463,7 @@ public class EntityManager {
         }
         if (Global.multiplayer) {
             NetworkData.serverThread.sendMessageToAll("removeentity!" + character.getId());
+            ids.removeValue(character.getId(), true);
         }
         releasePosition(character);
         character.getImage().remove();

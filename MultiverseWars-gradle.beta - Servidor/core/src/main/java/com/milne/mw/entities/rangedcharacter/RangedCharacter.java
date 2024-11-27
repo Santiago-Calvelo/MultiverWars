@@ -36,9 +36,9 @@ public class RangedCharacter extends com.milne.mw.entities.Character {
     }
 
     @Override
-    public void checkForAttack(Array<com.milne.mw.entities.Character> characters) {
+    public void checkForAttack(Array<Character> characters) {
         for (int i = 0; i < characters.size; i++) {
-            com.milne.mw.entities.Character enemy = characters.get(i);
+            Character enemy = characters.get(i);
             if (!enemy.getType().equalsIgnoreCase(getType())) {
                 onEnemyInRange(enemy);
             }
@@ -50,10 +50,14 @@ public class RangedCharacter extends com.milne.mw.entities.Character {
             }
             targetEnemy = null;
             this.isAttacking = false;
+        } else if (targetEnemy == null) {
+            if (getSpeed() != 0) {
+                resumeMovement();
+            }
         }
     }
 
-    public void onEnemyInRange(com.milne.mw.entities.Character enemy) {
+    public void onEnemyInRange(Character enemy) {
         if (enemy != this && isInSameRow(enemy) && isInRange(enemy) && isInFront(enemy) && enemy.getCanBeAttacked()) {
             targetEnemy = enemy;
             if (this.getSpeed() != 0) {
@@ -65,7 +69,7 @@ public class RangedCharacter extends com.milne.mw.entities.Character {
         }
     }
 
-    private boolean isInFront(com.milne.mw.entities.Character enemy) {
+    private boolean isInFront(Character enemy) {
         boolean isInFront = false;
         Rectangle thisHitbox = this.getHitbox();
         Rectangle enemyHitbox = enemy.getHitbox();

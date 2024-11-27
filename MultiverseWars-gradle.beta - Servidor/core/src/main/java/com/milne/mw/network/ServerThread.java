@@ -2,6 +2,7 @@ package com.milne.mw.network;
 
 import com.badlogic.gdx.Game;
 import com.milne.mw.globals.GameData;
+import com.milne.mw.globals.NetworkData;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

@@ -1,6 +1,5 @@
 package com.milne.mw.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -25,7 +24,7 @@ public class TwoPlayerModeScreen implements Screen {
         this.stage = new Stage(new FitViewport(800, 600));
         Gdx.input.setInputProcessor(stage);
 
-        backgroundTexture = loadTexture("difficulty/DIFICULTAD DOS JUGADORES.jpg");
+        backgroundTexture = loadTexture("multiverse-wars/playerscreen.jpg");
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setSize(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
         stage.addActor(backgroundImage);
@@ -48,6 +47,9 @@ public class TwoPlayerModeScreen implements Screen {
         stage.draw();
 
         if (Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
+            Global.multiplayer = false;
+            NetworkData.serverThread.end();
+            NetworkData.serverThread = null;
             GameData.game.setScreen(new MainMenuScreen());
         }
     }

@@ -35,7 +35,7 @@ public class ClientThread extends Thread {
                 socket.receive(packet);
                 processMessage(packet);
             } catch (IOException e) {
-                System.out.println("Servidor desconectado");
+
             }
         }
     }
@@ -94,6 +94,9 @@ public class ClientThread extends Thread {
             case "removeentity":
                 GameData.networkListener.removeEntity(Integer.parseInt(parts[1]));
                 break;
+            case "bombexplode":
+                GameData.networkListener.exploteBomb(Integer.parseInt(parts[1]),Float.parseFloat(parts[2]),Float.parseFloat(parts[3]),parts[4],Float.parseFloat(parts[5]),Float.parseFloat(parts[6]));
+                break;
             case "bossattack":
                 GameData.networkListener.drawBossAttack(parts[1],parts[2],Float.parseFloat(parts[3]),Float.parseFloat(parts[4]),Float.parseFloat(parts[5]),Float.parseFloat(parts[6]));
                 break;
@@ -109,6 +112,9 @@ public class ClientThread extends Thread {
                 break;
             case "win":
                 GameData.networkListener.win();
+                break;
+            case "endgame":
+                GameData.networkListener.endGame();
                 break;
         }
 

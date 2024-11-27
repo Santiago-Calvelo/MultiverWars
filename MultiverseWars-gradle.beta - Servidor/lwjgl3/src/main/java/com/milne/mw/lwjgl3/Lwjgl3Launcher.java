@@ -23,10 +23,10 @@ public class Lwjgl3Launcher {
 
         // Aquí se configuran los iconos de la ventana
         configuration.setWindowIcon(
-            "LOGO128.jpg",  // Icono de mayor tamaño
-            "LOGO64.png",   // Icono mediano
-            "LOGO32.jpg",   // Icono pequeño
-            "LOGO16.jpg"    // Icono muy pequeño
+            "logo128.jpg",  // Icono de mayor tamaño
+            "logo64.png",   // Icono mediano
+            "logo32.jpg",   // Icono pequeño
+            "logo16.jpg"    // Icono muy pequeño
         );
 
         return configuration;

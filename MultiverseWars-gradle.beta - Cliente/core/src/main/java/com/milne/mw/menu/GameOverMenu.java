@@ -23,7 +23,7 @@ public class GameOverMenu {
     public void createMenu() {
         mainMenuButton = new Rectangle(270f, 100f, 500, 50);
 
-        gameOverBackground = new Image(loadTexture("multiverse-wars/game-over.jpg"));
+        gameOverBackground = new Image(loadTexture("multiverse-wars/gameover-online.jpg"));
         gameOverBackground.setSize(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
 
         stage.addActor(gameOverBackground);

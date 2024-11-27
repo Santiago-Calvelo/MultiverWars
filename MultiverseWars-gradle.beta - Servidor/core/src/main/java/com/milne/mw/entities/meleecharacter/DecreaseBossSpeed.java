@@ -16,7 +16,7 @@ public class DecreaseBossSpeed implements SpecialAttack {
             boss.startMovement();
             RunnableAction resetCurrentSpeed = new RunnableAction();
             resetCurrentSpeed.setRunnable(() -> {
-                boss.setSpeed(boss.getBASE_SPEED());
+                boss.setSpeed(boss.getBaseSpeed());
                 character.removeCharacter();
             });
 

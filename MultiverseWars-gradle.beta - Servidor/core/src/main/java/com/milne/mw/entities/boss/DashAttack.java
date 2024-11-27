@@ -1,6 +1,5 @@
 package com.milne.mw.entities.boss;
 
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.milne.mw.entities.Character;
@@ -30,7 +29,7 @@ public class DashAttack implements BossAttack{
 
         RunnableAction resetBaseSpeed = new RunnableAction();
         resetBaseSpeed.setRunnable(() -> {
-            boss.setSpeed(boss.getBASE_SPEED());
+            boss.setSpeed(boss.getBaseSpeed());
             boss.pause();
             boss.resumeMovement();
         });

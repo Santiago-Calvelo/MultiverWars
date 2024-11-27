@@ -10,10 +10,12 @@ import com.milne.mw.globals.Global;
 import com.milne.mw.globals.NetworkData;
 
 import static com.milne.mw.globals.Global.loadTexture;
+import static com.milne.mw.globals.Global.multiplayer;
 
 public class Bomb {
     private String texture;
     private final Image image;
+    private String explosionPath;
     private boolean isDetonated = false;
     private Circle explosionRange;
     private int damage;
@@ -36,6 +38,7 @@ public class Bomb {
 
         moveDownward(targetY);
         entityManager.addBomb(this);
+        this.explosionPath = "characters/projectile/explosion.png";
     }
 
     private void moveDownward(float targetY) {
@@ -61,10 +64,12 @@ public class Bomb {
 
     private void detonate() {
         // Cambia la textura a la de la explosión
-        image.setDrawable(new TextureRegionDrawable(loadTexture("characters/projectile/explosion.png")));
+        image.setDrawable(new TextureRegionDrawable(loadTexture(explosionPath)));
         image.setSize(explosionRange.radius * 2, explosionRange.radius * 2);
         image.setPosition(explosionRange.x - explosionRange.radius, explosionRange.y - explosionRange.radius);
-
+        if (Global.multiplayer) {
+            NetworkData.serverThread.sendMessageToAll("bombexplode!" + id + "!" + image.getX() + "!" + image.getY() + "!" + explosionPath + "!" + image.getWidth() + "!" + image.getHeight());
+        }
         // Aplica daño a los personajes dentro del rango de explosión
         entityManager.getCharacters().forEach(character -> {
             if (!character.getType().equalsIgnoreCase("tower")) {

@@ -2,6 +2,7 @@ package com.milne.mw;
 
 import com.badlogic.gdx.Game;
 import com.milne.mw.globals.GameData;
+import com.milne.mw.globals.NetworkData;
 import com.milne.mw.screens.SplashScreen;
 
 public class MultiverseWars extends Game {
@@ -20,6 +21,11 @@ public class MultiverseWars extends Game {
 
     @Override
     public void dispose() {
+        if (NetworkData.clientThread != null) {
+            NetworkData.clientThread.sendMessage("disconnect!" + GameData.clientNumber);
+            NetworkData.clientThread.end();
+            NetworkData.clientThread = null;
+        }
         MusicManager.stopMusic();
     }
 }

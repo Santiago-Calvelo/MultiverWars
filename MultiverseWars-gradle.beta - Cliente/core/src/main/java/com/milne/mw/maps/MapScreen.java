@@ -71,7 +71,7 @@ public class MapScreen implements Screen {
     }
 
     public void addEntity(int id, float x, float y, String entityImage, float hitboxWidth, float hitboxHeight) {
-        System.out.println("Spawneando entidad en " + x + " " + y);
+        System.out.println(id);
         Image entity = new Image(Global.loadTexture(entityImage));
         entity.setSize(hitboxWidth, hitboxHeight);
         entity.setPosition(x,y);
@@ -81,7 +81,6 @@ public class MapScreen implements Screen {
     }
 
     public void addCardsToPanel(String cardImage, float x, float y, int width, int height, String entityType) {
-        System.out.println("Agregando carta");
         Image card = new Image(Global.loadTexture(cardImage));
 
         card.setSize(width,height);
@@ -95,9 +94,18 @@ public class MapScreen implements Screen {
 
     public void removeEntity(int id) {
         Image entity = entities.get(id);
-        entity.remove();
-        stage.getActors().removeValue(entity, true);
-        entities.remove(id);
+        if (entity != null) {
+            entity.remove();
+            stage.getActors().removeValue(entity, true);
+            entities.remove(id);
+        }
+    }
+
+    public void exploteBomb(int id, float x, float y, String explosionPath, float width, float height) {
+        Image entity = entities.get(id);
+        entity.setDrawable(new TextureRegionDrawable(Global.loadTexture(explosionPath)));
+        entity.setSize(width,height);
+        entity.setPosition(x,y);
     }
 
     public void moveEntity(int id, float currentX, float currentY) {
