@@ -2,13 +2,13 @@ package com.milne.mw.maps;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.milne.mw.difficulty.Difficulty;
 import com.milne.mw.entities.SellTowerListener;
+import com.milne.mw.globals.GameData;
 import com.milne.mw.globals.Global;
 import com.milne.mw.globals.NetworkData;
 import com.milne.mw.menu.GameOverMenu;
@@ -34,6 +34,11 @@ public class MapScreen implements Screen {
         this.stage = new Stage(new FitViewport(800, 600));
         Gdx.input.setInputProcessor(stage);
         renderManager = RenderManager.getInstance(map, stage);
+        if (Global.multiplayer) {
+            for (int i = 0; i < NetworkData.serverThread.getClients().length; i++) {
+                NetworkData.serverThread.getClients()[i].setPlayer(new Player(difficultyLevel.getInitalLives(), difficultyLevel.getInitialEnergy(), difficultyLevel.getEnergyGenerationRate()));
+            }
+        }
         player = new Player(difficultyLevel.getInitalLives(), difficultyLevel.getInitialEnergy(), difficultyLevel.getEnergyGenerationRate());
         entityManager = new EntityManager(stage, difficultyLevel, player);
         pauseMenu = new PauseMenu(stage, entityManager);
@@ -45,10 +50,11 @@ public class MapScreen implements Screen {
         entityManager.setVictoryMenu(victoryMenu);
         entityManager.setGameOverMenu(gameOverMenu);
         stage.addListener(new SellTowerListener(entityManager));
-
-        renderManager.setPlayer(player);
-        renderManager.setMaxRound(difficultyLevel.getMaxRound());
-        renderManager.initializeLabels(entityManager.getRound());
+        if (!Global.multiplayer) {
+            renderManager.setPlayer(player);
+            renderManager.setMaxRound(difficultyLevel.getMaxRound());
+            renderManager.initializeLabels(entityManager.getRound());
+        }
     }
 
     private void addEntityCardsToPanel() {
@@ -77,6 +83,11 @@ public class MapScreen implements Screen {
         }
     }
 
+    public void summonTower(String entityType, float x, float y, float cardWidth, float cardHeight, int numberPlayer) {
+        entityManager.handleEntityPlacement(EntityType.valueOf(entityType), x, y, cardWidth, cardHeight);
+        entityManager.setNumberPlayer(numberPlayer);
+    }
+
 
     @Override
     public void show() {
@@ -85,20 +96,25 @@ public class MapScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (Gdx.input.justTouched()) {
-            float touchX = Gdx.input.getX();
-            float touchY = Gdx.input.getY();
-            Vector2 worldTouch = stage.getViewport().unproject(new Vector2(touchX, touchY));
-            pauseMenu.handleInput(worldTouch.x, worldTouch.y);
+        if (!Global.multiplayer) {
+            if (Gdx.input.justTouched()) {
+                float touchX = Gdx.input.getX();
+                float touchY = Gdx.input.getY();
+                Vector2 worldTouch = stage.getViewport().unproject(new Vector2(touchX, touchY));
+                pauseMenu.handleInput(worldTouch.x, worldTouch.y);
+            }
+
+            if (Gdx.input.justTouched() && !player.isAlive()) {
+                float touchX = Gdx.input.getX();
+                float touchY = Gdx.input.getY();
+                Vector2 worldTouch = stage.getViewport().unproject(new Vector2(touchX, touchY));
+                gameOverMenu.handleInput(worldTouch.x, worldTouch.y);
+            }
         }
 
-        if (Gdx.input.justTouched() && !player.isAlive()) {
-            float touchX = Gdx.input.getX();
-            float touchY = Gdx.input.getY();
-            Vector2 worldTouch = stage.getViewport().unproject(new Vector2(touchX, touchY));
-            gameOverMenu.handleInput(worldTouch.x, worldTouch.y);
+        if (!GameData.finishedGame) {
+            renderManager.render(pauseMenu.getIsPaused(), entityManager, delta, pauseMenu);
         }
-        renderManager.render(pauseMenu.getIsPaused(), entityManager, delta, pauseMenu);
     }
 
     @Override

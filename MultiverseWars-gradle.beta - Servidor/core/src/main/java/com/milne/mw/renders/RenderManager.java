@@ -12,8 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.milne.mw.entities.Character;
 import com.milne.mw.entities.EntityManager;
+import com.milne.mw.globals.GameData;
 import com.milne.mw.globals.Global;
+import com.milne.mw.globals.NetworkData;
 import com.milne.mw.menu.PauseMenu;
+import com.milne.mw.network.ServerThread;
 import com.milne.mw.player.Player;
 
 import java.util.ArrayList;
@@ -90,13 +93,17 @@ public class RenderManager {
         // Alterna la textura de caminata cada 0.5 segundos
         if (walkAnimationTime >= 0.5f) {
             for (Character character : entityManager.getCharacters()) {
-                if (character.getLives() > 0) {
+                if (character.getLives() > 0 && !character.isAttacking()) {
                     TextureRegionDrawable currentDrawable = (TextureRegionDrawable) character.getImage().getDrawable();
                     TextureRegionDrawable nextDrawable = (currentDrawable.getRegion().getTexture() == character.getWalk1Texture())
                         ? new TextureRegionDrawable(character.getWalk2Texture())
                         : new TextureRegionDrawable(character.getWalk1Texture());
 
                     character.getImage().setDrawable(nextDrawable);
+                    if (Global.multiplayer) {
+                        Texture texturePath = nextDrawable.getRegion().getTexture();
+                        NetworkData.serverThread.sendMessageToAll("animatetextureentity!" + character.getId() + "!" + texturePath);
+                    }
                 }
             }
             walkAnimationTime = 0;
@@ -121,12 +128,21 @@ public class RenderManager {
     }
 
     private void updateLabels(int currentRound) {
-        if (this.currentRound != currentRound) {
-            this.currentRound = currentRound;
+        if (Global.multiplayer) {
+            for (int i = 0; i < NetworkData.serverThread.getClients().length; i++) {
+                if (NetworkData.serverThread.getClients()[i] != null) {
+                    NetworkData.serverThread.sendMessage("updateplayerstate" + "!" + NetworkData.serverThread.getClients()[i].getPlayer().getLives() + "!" + NetworkData.serverThread.getClients()[i].getPlayer().getEnergy(), NetworkData.serverThread.getClients()[i].getIp(), NetworkData.serverThread.getClients()[i].getPort());
+                }
+            }
         }
-        roundLabel.setText(currentRound + "/" + maxRound);
-        livesLabel.setText("Vidas: " + player.getLives());
-        energyLabel.setText("Energía: " + player.getEnergy());
+        else {
+            if (this.currentRound != currentRound) {
+                this.currentRound = currentRound;
+            }
+            roundLabel.setText(currentRound + "/" + maxRound);
+            livesLabel.setText("Vidas: " + player.getLives());
+            energyLabel.setText("Energía: " + player.getEnergy());
+        }
     }
 
     public void initializeLabels(int currentRound) {

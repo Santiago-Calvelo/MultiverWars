@@ -1,0 +1,72 @@
+badlogic.jpg
+bye bye.mp3
+characters/barbarian/barbaro01.png
+characters/barbarian/barbaro02.png
+characters/barbarian/barbaro03.png
+characters/barbarian/barbaro04.png
+characters/bloon/CARTA-GLOBO.jpg
+characters/bloon/globo.png
+characters/bloon/globo1.png
+characters/boss/boss.png
+characters/boss/force-aura.png
+characters/cowboy/carta-vaquero.jpg
+characters/cowboy/vaqueroAtaque1.png
+characters/cowboy/vaqueroMov1.png
+characters/cowboy/vaqueroMov2.png
+characters/jiraiya/carta-jiraiya.jpg
+characters/jiraiya/jiraiya01.png
+characters/jiraiya/jiraiya02.png
+characters/jiraiya/jiraiya04.png
+characters/peashooter/lanzaguisantes-carta.png
+characters/peashooter/lanzaguisantes.png
+characters/peashooter/lanzaguisantes2.png
+characters/peashooter/lanzaguisantes3.png
+characters/projectile/bala.png
+characters/projectile/bomba.png
+characters/projectile/explosion.png
+characters/projectile/guisante.png
+characters/projectile/laser.png
+characters/skeleton/skeleton paso.png
+characters/skeleton/skeleton.png
+characters/skeleton/skeleton2.png
+characters/skeleton/skeleton3.png
+characters/soldier/soldado01.png
+characters/soldier/soldado02.png
+characters/soldier/soldado03.png
+characters/soldier/soldado04.png
+characters/stormtrooper/storm01.png
+characters/stormtrooper/storm02.png
+characters/stormtrooper/storm03.png
+characters/voltorb/carta-voltorb.jpg
+characters/voltorb/vol01.png
+characters/voltorb/ZAAP.png
+characters/wingmonkey/wingmonkey.png
+characters/wingmonkey/wingmonkey1.png
+default.fnt
+difficulty/DIFICULTAD UN JUGADOR.jpg
+font-small.fnt
+introduction/dere.png
+introduction/introduccion.jpg
+introduction/izqui.png
+libgdx.png
+LOGO128.jpg
+LOGO16.jpg
+LOGO32.jpg
+LOGO64.png
+maps/mapa1.jpg
+maps/mapa2.jpg
+maps/mapa3.jpg
+maps/mapa4.jpg
+maps/menu de mapas.jpg
+multiverse-wars/game-over.jpg
+multiverse-wars/menu.png
+multiverse-wars/playerscreen.jpg
+multiverse-wars/splash.png
+multiverse-wars/win.jpg
+musica inicio.mp3
+pause/escena-pausa.png
+tema d battala.mp3
+tema de batalla.mp3
+uiskin.atlas
+uiskin.json
+uiskin.png

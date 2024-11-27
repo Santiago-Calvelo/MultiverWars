@@ -113,7 +113,7 @@ public abstract class Character {
     }
 
     public void tryAttack() {
-        RenderManager.getInstance().animateCharacterAttack(this, attackCooldown);
+        //RenderManager.getInstance().animateCharacterAttack(this, attackCooldown);
 
         if (this instanceof FlyCharacter) {
             this.isMoving = false;

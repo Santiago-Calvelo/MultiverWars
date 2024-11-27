@@ -17,56 +17,56 @@ public enum EntityType {
         @Override
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new RangedCharacter(
-                loadTexture(getTexturePath()), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
-                loadTexture(getWalk2Path()), loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),
-                loadTexture(getProjectilePath()), x, y, getLives(), getSpeed(), entityManager, getType(),
+                getTexturePath(), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
+                loadTexture(getWalk2Path()), getAttack1Path(), getAttack2Path(),
+                getProjectilePath(), x, y, getLives(), getSpeed(), entityManager, getType(),
                 getRange(), getAttackCooldown(), getDamage(), getEnergy(), getCanBeAttacked(), getDamageToPlayer()
             );
         }
     },
 
-    COWBOY("characters/cowboy/carta-vaquero.jpg", "characters/cowboy/vaqueroMov1.png", "characters/cowboy/vaqueroMov2.png", "characters/cowboy/vaqueroAtaque1.png", "characters/cowboy/vaqueroMov2.png", "characters/projectile/bala.png",  25, "tower", false, true, 50, 50, 0, 7, 1.5f, 8, 75, 0) {
+    COWBOY("characters/cowboy/carta-vaquero.jpg", "characters/cowboy/vaqueroMov1.png", "characters/cowboy/vaqueroMov2.png", "characters/cowboy/vaqueroAtaque1.png", "characters/cowboy/vaqueroMov2.png", "characters/projectile/bala.png",  25, "tower", false, true, 50, 50, 0, 7, 1.5f, 8, 30, 0) {
         @Override
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new RangedCharacter(
-                loadTexture(getTexturePath()), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
-                loadTexture(getWalk2Path()), loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),
-                loadTexture(getProjectilePath()), x, y, getLives(), getSpeed(), entityManager, getType(),
+                getTexturePath(), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
+                loadTexture(getWalk2Path()), getAttack1Path(), getAttack2Path(),
+                getProjectilePath(), x, y, getLives(), getSpeed(), entityManager, getType(),
                 getRange(), getAttackCooldown(), getDamage(), getEnergy(), getCanBeAttacked(), getDamageToPlayer()
             );
         }
     },
 
-    JIRAIYA("characters/jiraiya/carta-jiraiya.jpg", "characters/jiraiya/jiraiya01.png", "characters/jiraiya/jiraiya02.png", "characters/jiraiya/jiraiya04.png", "characters/jiraiya/jiraiya04.png",  50, "tower", false, false, 50, 50, 0, 1f, 40, 25, new DecreaseBossSpeed(), 0) {
+    JIRAIYA("characters/jiraiya/carta-jiraiya.jpg", "characters/jiraiya/jiraiya01.png", "characters/jiraiya/jiraiya02.png", "characters/jiraiya/jiraiya04.png", "characters/jiraiya/jiraiya04.png",  50, "tower", false, false, 50, 50, 0, 1f, 40, 80, new DecreaseBossSpeed(), 0) {
         @Override
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new MeleeCharacter(
-                loadTexture(getTexturePath()), getHitboxWidth(), getHitboxHeight(),
-                loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),  loadTexture(getWalk1Path()),
+                getTexturePath(), getHitboxWidth(), getHitboxHeight(),
+                getAttack1Path(), getAttack2Path(),  loadTexture(getWalk1Path()),
                 loadTexture(getWalk2Path()), x, y, getLives(), getSpeed(), entityManager, getType(), getAttackCooldown(),
                 getDamage(), getEnergy(), getCanBeAttacked(), getSpecialAttack(), getDamageToPlayer()
             );
         }
     },
 
-    VOLTORB("characters/voltorb/carta-voltorb.jpg", "characters/voltorb/vol01.png", "characters/voltorb/vol01.png", "characters/voltorb/ZAAP!.png",  "characters/voltorb/ZAAP!.png", 50, "tower", false, false, 50, 50, 0, 1f, 40, 25, new StunBoss(), 0) {
+    VOLTORB("characters/voltorb/carta-voltorb.jpg", "characters/voltorb/vol01.png", "characters/voltorb/vol01.png", "characters/voltorb/zaap.png",  "characters/voltorb/ZAAP.png", 50, "tower", false, false, 50, 50, 0, 1f, 40, 80, new StunBoss(), 0) {
         @Override
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new MeleeCharacter(
-                loadTexture(getTexturePath()), getHitboxWidth(), getHitboxHeight(),
-                loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),  loadTexture(getWalk1Path()),
+                getTexturePath(), getHitboxWidth(), getHitboxHeight(),
+                getAttack1Path(), getAttack2Path(),  loadTexture(getWalk1Path()),
                 loadTexture(getWalk2Path()), x, y, getLives(), getSpeed(), entityManager, getType(), getAttackCooldown(),
                 getDamage(), getEnergy(), getCanBeAttacked(), getSpecialAttack(), getDamageToPlayer()
             );
         }
     },
 
-    BLOON("characters/bloon/CARTA-GLOBO.jpg", "characters/bloon/globo.png", "characters/bloon/globo1.png", 10, "tower", false, true, 50, 50, 0, 1f, 25, 125) {
+    BLOON("characters/bloon/carta-globo.jpg", "characters/bloon/globo.png", "characters/bloon/globo1.png", 10, "tower", false, true, 50, 50, 0, 1f, 25, 50) {
         @Override
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new Bloon(
-                loadTexture(getTexturePath()), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
-                loadTexture(getAttack1Path()), x, y, getLives(), getSpeed(),
+                getTexturePath(), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
+                getAttack1Path(), x, y, getLives(), getSpeed(),
                 entityManager, getType(), getAttackCooldown(), getDamage(), getEnergy(), getCanBeAttacked()
             );
         }
@@ -76,8 +76,8 @@ public enum EntityType {
         @Override
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new MeleeCharacter(
-                loadTexture(getTexturePath()), getHitboxWidth(), getHitboxHeight(),
-                loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),  loadTexture(getWalk1Path()),
+                getTexturePath(), getHitboxWidth(), getHitboxHeight(),
+                getAttack1Path(), getAttack2Path(),  loadTexture(getWalk1Path()),
                 loadTexture(getWalk2Path()), x, y, getLives(), getSpeed(), entityManager, getType(), getAttackCooldown(),
                 getDamage(), getEnergy(), getCanBeAttacked(), getSpecialAttack(), getDamageToPlayer()
             );
@@ -88,9 +88,9 @@ public enum EntityType {
         @Override
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new RangedCharacter(
-                loadTexture(getTexturePath()), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
-                loadTexture(getWalk2Path()), loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),
-                loadTexture(getProjectilePath()), x, y, getLives(), getSpeed(), entityManager, getType(),
+                getTexturePath(), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
+                loadTexture(getWalk2Path()), getAttack1Path(), getAttack2Path(),
+                getProjectilePath(), x, y, getLives(), getSpeed(), entityManager, getType(),
                 getRange(), getAttackCooldown(), getDamage(), getEnergy(), getCanBeAttacked(), getDamageToPlayer()
             );
         }
@@ -100,32 +100,32 @@ public enum EntityType {
         @Override
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new MeleeCharacter(
-                loadTexture(getTexturePath()), getHitboxWidth(), getHitboxHeight(),
-                loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),  loadTexture(getWalk1Path()),
+                getTexturePath(), getHitboxWidth(), getHitboxHeight(),
+                getAttack1Path(), getAttack2Path(),  loadTexture(getWalk1Path()),
                 loadTexture(getWalk2Path()), x, y, getLives(), getSpeed(), entityManager, getType(), getAttackCooldown(),
                 getDamage(), getEnergy(), getCanBeAttacked(), getSpecialAttack(), getDamageToPlayer()
             );
         }
     },
 
-    SOLDIER(null, "characters/soldier/soldado01.png", "characters/soldier/soldado02.png", "characters/soldier/soldado03.png", "characters/soldier/soldado04.png", "characters/projectile/bala.png",  20, "enemy", true, true, 50, 50, 75, 7, 1.5f, 8, 12, 12) {
+    SOLDIER(null, "characters/soldier/soldado01.png", "characters/soldier/soldado02.png", "characters/soldier/soldado03.png", "characters/soldier/soldado04.png", "characters/projectile/bala.png",  20, "enemy", true, true, 50, 50, 75, 4, 1.5f, 8, 12, 12) {
         @Override
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new RangedCharacter(
-                loadTexture(getTexturePath()), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
-                loadTexture(getWalk2Path()), loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),
-                loadTexture(getProjectilePath()), x, y, getLives(), getSpeed(), entityManager, getType(),
+                getTexturePath(), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
+                loadTexture(getWalk2Path()), getAttack1Path(), getAttack2Path(),
+                getProjectilePath(), x, y, getLives(), getSpeed(), entityManager, getType(),
                 getRange(), getAttackCooldown(), getDamage(), getEnergy(), getCanBeAttacked(), getDamageToPlayer()
             );
         }
     },
 
-    PLANE("characters/wingmonkey/wingmonkey.png", "characters/wingmonkey/wingmonkey.png", "characters/wingmonkey/wingmonkey1.png", 1, "enemy", false, false, 50, 50, 533, 0.233f, 0, 0) {
+    PLANE(null, "characters/wingmonkey/wingmonkey.png", "characters/wingmonkey/wingmonkey1.png", 1, "enemy", false, false, 50, 50, 533, 0.233f, 0, 0) {
         @Override
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new Plane(
-                loadTexture(getTexturePath()), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
-                loadTexture(getAttack1Path()), x, y, getLives(), getSpeed(),
+                getTexturePath(), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
+                getAttack1Path(), x, y, getLives(), getSpeed(),
                 entityManager, getType(), getAttackCooldown(), getDamage(), getEnergy(), getCanBeAttacked()
             );
         }

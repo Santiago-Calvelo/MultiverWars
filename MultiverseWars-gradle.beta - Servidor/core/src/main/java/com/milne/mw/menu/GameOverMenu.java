@@ -9,8 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.milne.mw.MusicManager;
 import com.milne.mw.entities.EntityManager;
 import com.milne.mw.globals.GameData;
+import com.milne.mw.globals.Global;
 import com.milne.mw.player.Player;
 import com.milne.mw.screens.MainMenuScreen;
+
+import javax.swing.plaf.PanelUI;
 
 import static com.milne.mw.globals.Global.loadTexture;
 
@@ -30,8 +33,11 @@ public class GameOverMenu {
         this.entityManager = entityManager;
     }
 
-    public void createMenu(Player player) {
+    public void togglePause() {
+        pauseMenu.togglePause();
+    }
 
+    public void createMenu(Player player) {
         pauseMenu.setEnable(false);
         pauseMenu.togglePause();
         entityManager.getPlacementHitboxes().clear();
@@ -67,10 +73,6 @@ public class GameOverMenu {
         entityManager.reset();
         pauseMenu.togglePause();
         dispose();
-    }
-
-    public Rectangle getRetryButton() {
-        return retryButton;
     }
 
     public void dispose() {

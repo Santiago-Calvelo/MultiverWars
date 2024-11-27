@@ -84,9 +84,6 @@ public class DifficultySelectionScreen implements Screen {
     private void startGameWithDifficulty(Difficulty difficultyLevel) {
         if (Global.multiplayer) {
             NetworkData.clientThread.sendMessage("difficultyselected!" + difficultyLevel.name());
-        } else {
-            MapScreen mapScreen = new MapScreen(map, difficultyLevel);
-            GameData.game.setScreen(mapScreen);
         }
     }
 

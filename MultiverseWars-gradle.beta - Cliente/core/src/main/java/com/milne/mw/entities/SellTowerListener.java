@@ -18,7 +18,7 @@ public class SellTowerListener extends InputListener {
             System.out.println("Clic derecho detectado.");
             float stageX = event.getStageX();
             float stageY = event.getStageY();
-            entityManager.handleRightClick(stageX, stageY);
+            //entityManager.handleRightClick(stageX, stageY);
             return true;
         }
         return false;

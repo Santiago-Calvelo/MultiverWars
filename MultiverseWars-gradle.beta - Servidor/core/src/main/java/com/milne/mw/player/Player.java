@@ -31,6 +31,7 @@ public class Player {
         if (energy < 0) {
             energy = 0;
         }
+
     }
 
     public void loseLife(int lives) {

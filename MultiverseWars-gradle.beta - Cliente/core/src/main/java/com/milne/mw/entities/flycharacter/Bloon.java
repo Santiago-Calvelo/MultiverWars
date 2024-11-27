@@ -14,7 +14,7 @@ public class Bloon extends FlyCharacter{
         float bombY = getHitbox().y + image.getHeight();
         float targetY = getHitbox().y;
         Bomb bomb = new Bomb(bombX, bombY, getDamage(), entityManager, targetY);
-        entityManager.addBomb(bomb);
+        //entityManager.addBomb(bomb);
     }
 
 }

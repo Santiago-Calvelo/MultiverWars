@@ -9,34 +9,37 @@ import com.milne.mw.entities.EntityManager;
 import com.milne.mw.renders.BossAnimator;
 
 public class ForceSmashAttack implements BossAttack {
-    private final Texture texture; // Textura específica para el ataque
+    private String texture; // Textura específica para el ataque
     private float duration; // Duración del ataque
 
-    public ForceSmashAttack(Texture texture) {
+    public ForceSmashAttack(String texture) {
         this.texture = texture;
     }
 
     @Override
     public void execute(BossCharacter boss, EntityManager entityManager, BossAnimator animator, int damage, float duration) {
         this.duration = duration;
-        RunnableAction applyDamage = new RunnableAction();
-        applyDamage.setRunnable(() -> {
-            Circle forceSmashRange = boss.getRange();
-            animator.playForceSmashAnimation(texture, boss, forceSmashRange, duration);
-
-            entityManager.getCharacters().forEach(enemy -> {
-                Vector2 hitboxCenterEnemy = enemy.getHitboxCenter();
-                if (enemy.getType().equalsIgnoreCase("tower") && forceSmashRange.contains(hitboxCenterEnemy)) {
-                    enemy.takeDamage(damage);
-                }
-            });
-        });
-
         boss.getImage().addAction(Actions.sequence(
-            Actions.repeat((int) (duration / 0.5f), Actions.sequence(
-                applyDamage,
-                Actions.delay(0.5f) // Intervalo entre daños
-            ))
+            Actions.forever(Actions.run(() -> {
+                // Obtener el rango del ataque
+                Circle forceSmashRange = boss.getRange();
+
+                // Llamar al animador para actualizar la animación
+                animator.playForceSmashAnimation(texture, boss, forceSmashRange, duration);
+
+                // Aplicar daño a los enemigos dentro del rango
+                entityManager.getCharacters().forEach(enemy -> {
+                    Vector2 hitboxCenterEnemy = enemy.getHitboxCenter();
+                    if (enemy.getType().equalsIgnoreCase("tower") && forceSmashRange.contains(hitboxCenterEnemy)) {
+                        enemy.takeDamage(damage);
+                    }
+                });
+            })),
+            Actions.delay(duration), // Ejecutar esta lógica durante la duración definida
+            Actions.run(() -> {
+                // Limpieza al finalizar el ataque, si es necesario
+                System.out.println("Force Smash Attack terminado.");
+            })
         ));
     }
 

@@ -14,74 +14,50 @@ import com.milne.mw.entities.Character;
 import com.milne.mw.entities.EntityManager;
 import com.milne.mw.globals.Global;
 import com.milne.mw.menu.PauseMenu;
-import com.milne.mw.player.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+
 
 public class RenderManager {
     private static RenderManager instance;
     private ShapeRenderer shapeRenderer;
     private Stage stage;
-    private Image backgroundImage;
+
     private float walkAnimationTime;
-    private ArrayList<AttackAnimation> attackAnimations;
-    private int maxRound, currentRound;
+   // private ArrayList<AttackAnimation> attackAnimations;
+    private HashMap<String,Image> attackImages;
     private Skin skin;
     private Label roundLabel;
     private Label livesLabel;
     private Label energyLabel;
-    private Player player;
-    private DebugRender debugRender;
 
-    private RenderManager(String mapTexture, Stage stage) {
+    public RenderManager(Stage stage) {
         this.stage = stage;
         this.shapeRenderer = new ShapeRenderer();
-        this.backgroundImage = new Image(Global.loadTexture(mapTexture));
-        backgroundImage.setSize(stage.getWidth(), stage.getHeight());
-        stage.addActor(backgroundImage);
-        this.attackAnimations = new ArrayList<>();
-        this.debugRender = new DebugRender(stage);
+        //this.attackAnimations = new ArrayList<>();
+        this.attackImages = new HashMap<>();
     }
 
-    public static RenderManager getInstance(String mapTexture, Stage stage) {
-        if (instance == null) {
-            instance = new RenderManager(mapTexture, stage);
-        }
-        return instance;
-    }
-
-    public static void resetInstance() {
-        if (instance != null) {
-            instance.dispose();
-            instance = null;
-        }
-    }
-
-    public static RenderManager getInstance() {
-        if (instance == null) {
-            throw new IllegalStateException("RenderManager no ha sido inicializado. Llama a getInstance() con parámetros primero.");
-        }
-        return instance;
-    }
 
     public void render(boolean isPaused, EntityManager entityManager, float delta, PauseMenu pauseMenu) {
-        if (!isPaused) {
+       /* if (!isPaused) {
             stage.act(delta);
             entityManager.update(delta);
             updateWalkAnimation(delta, entityManager);
             updateLabels(entityManager.getRound());
-        }
+        } */
         pauseMenu.checkForEscapeKey();
         stage.draw();
 
-        if (!isPaused && Global.debugMode) {
+       /* if (!isPaused && Global.debugMode) {
             debugRender.drawHitboxes(entityManager);
             debugRender.drawPlacementZones(entityManager, pauseMenu);
             debugRender.drawBombRanges(entityManager);
-        }
+        } */
 
-        updateAttackAnimations(delta);
+        //updateAttackAnimations(delta);
     }
 
     private void updateWalkAnimation(float delta, EntityManager entityManager) {
@@ -106,31 +82,25 @@ public class RenderManager {
     // Método para iniciar la animación del ataque
     public void animateCharacterAttack(Character character, float cooldown) {
         // Crea una nueva animación de ataque y la añade a la lista
-        attackAnimations.add(new AttackAnimation(character, cooldown));
+        //attackAnimations.add(new AttackAnimation(character, cooldown));
     }
 
     private void updateAttackAnimations(float delta) {
         // Usa un iterador para actualizar y eliminar animaciones finalizadas
-        Iterator<AttackAnimation> iterator = attackAnimations.iterator();
+       /* Iterator<AttackAnimation> iterator = attackAnimations.iterator();
         while (iterator.hasNext()) {
             AttackAnimation animation = iterator.next();
             if (animation.update(delta)) {
                 iterator.remove(); // Elimina la animación si ha terminado
             }
-        }
+        } */
     }
 
-    private void updateLabels(int currentRound) {
-        if (this.currentRound != currentRound) {
-            this.currentRound = currentRound;
-        }
-        roundLabel.setText(currentRound + "/" + maxRound);
-        livesLabel.setText("Vidas: " + player.getLives());
-        energyLabel.setText("Energía: " + player.getEnergy());
+    public void updateRoundLabels(int currentRound, int maxRound) {
+        this.roundLabel.setText(currentRound + "/" + maxRound);
     }
 
-    public void initializeLabels(int currentRound) {
-
+    public void initializeRoundLabel() {
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         roundLabel = new Label("", skin);
         roundLabel.setFontScale(2f);
@@ -141,44 +111,64 @@ public class RenderManager {
         rounds.setFillParent(true);
         rounds.add(roundLabel).padTop(20).padRight(20);
         stage.addActor(rounds);
+    }
 
-        livesLabel = new Label("Vidas: " + player.getLives(), skin);
-        livesLabel.setFontScale(1.5f);
-        livesLabel.setColor(Color.RED);
-        stage.addActor(livesLabel);
+    public void updatePlayerLabels(int lives, int energy) {
+        if (this.livesLabel == null || this.energyLabel == null) {
+            initializePlayerLabels(lives, energy);
+        } else {
+            this.livesLabel.setText("Vidas: " + lives);
+            this.energyLabel.setText("Energía: " + energy);
+        }
+    }
 
-        energyLabel = new Label("Energía: " + player.getEnergy(), skin);
-        energyLabel.setFontScale(1.5f);
-        energyLabel.setColor(Color.BLUE);
-        stage.addActor(energyLabel);
+
+    public void initializePlayerLabels(int lives, int energy) {
+        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        this.livesLabel = new Label("Vidas: " + lives, skin);
+        this.livesLabel.setFontScale(1.5f);
+        this.livesLabel.setColor(Color.RED);
+        stage.addActor(this.livesLabel);
+
+        this.energyLabel = new Label("Energía: " + energy, skin);
+        this.energyLabel.setFontScale(1.5f);
+        this.energyLabel.setColor(Color.BLUE);
+        stage.addActor(this.energyLabel);
 
         // Posición
         Table energyAndLives = new Table();
         energyAndLives.top().left();
         energyAndLives.setFillParent(true);
-        energyAndLives.add(livesLabel).padLeft(20).padTop(20).row();
-        energyAndLives.add(energyLabel).padLeft(20);
+        energyAndLives.add(this.livesLabel).padLeft(20).padTop(20).row();
+        energyAndLives.add(this.energyLabel).padLeft(20);
         stage.addActor(energyAndLives);
-
-        updateLabels(currentRound);
     }
 
-    public void setMaxRound(int maxRound) {
-        this.maxRound = maxRound;
+    public void drawBossAttack(String idAttack, String texture, float x, float y, float width, float height) {
+        Image attack = new Image(Global.loadTexture(texture));
+        attack.setSize(width,height);
+        attack.setPosition(x,y);
+        stage.addActor(attack);
+        attack.setZIndex(1);
+
+        attackImages.put(idAttack, attack);
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void updateBossAttack(String idAttack, float x, float y) {
+        attackImages.get(idAttack).setPosition(x,y);
+    }
+
+    public void removeBossAttack(String idAttack) {
+        Image attack = attackImages.get(idAttack);
+        attack.remove();
+        stage.getActors().removeValue(attack, true);
+        attackImages.remove(idAttack);
     }
 
     public void dispose() {
         if (shapeRenderer != null) {
             shapeRenderer.dispose();
             shapeRenderer = null;
-        }
-        if (backgroundImage != null) {
-            backgroundImage.remove();
-            backgroundImage = null;
         }
         if (skin != null) {
             skin.dispose();

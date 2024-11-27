@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.milne.mw.entities.EntityManager;
 
 public class SellTowerListener extends InputListener {
-    private final EntityManager entityManager;
+    private EntityManager entityManager;
 
     public SellTowerListener(EntityManager entityManager) {
         this.entityManager = entityManager;

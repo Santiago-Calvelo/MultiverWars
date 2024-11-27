@@ -31,7 +31,7 @@ public class Plane extends FlyCharacter{
 
                 float spawnX = getHitboxCenter().x;
                 float spawnY = getHitboxCenter().y;
-                entityManager.spawnEntity(randomEnemy, spawnX, spawnY);
+                //entityManager.spawnEntity(randomEnemy, spawnX, spawnY);
                 entityManager.setEnemiesInGame(1);
                 enemiesSpawned++;
             }

@@ -32,7 +32,7 @@ public class RangedCharacter extends com.milne.mw.entities.Character {
         }
         Projectile projectile = new Projectile(projectileTexture, x,
             getHitboxCenter().y, entityManager, targetEnemy, getType(), getDamage());
-        entityManager.addProjectile(projectile);
+        //entityManager.addProjectile(projectile);
     }
 
     @Override

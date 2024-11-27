@@ -25,6 +25,10 @@ public class VictoryMenu {
         this.pauseMenu = pauseMenu;
     }
 
+    public void togglePause() {
+        pauseMenu.togglePause();
+    }
+
     public void createMenu() {
         pauseMenu.setEnable(false);
         pauseMenu.togglePause();

@@ -28,8 +28,8 @@ public class BossCharacter extends Character {
     private boolean isDashing = false;
     private boolean movingRight = true;
 
-    public BossCharacter(Texture texture, float x, float y, int hitboxWidth, int hitboxHeight, int lives,
-                         EntityManager entityManager, int speed, Texture walkTexture, Texture attackTexture, Texture forceSmash, String type, float attackCooldown, int damage, int energy, BossAnimator animator, boolean canBeAttacked) {
+    public BossCharacter(String texture, float x, float y, int hitboxWidth, int hitboxHeight, int lives,
+                         EntityManager entityManager, int speed, Texture walkTexture, String attackTexture, String forceSmash, String type, float attackCooldown, int damage, int energy, BossAnimator animator, boolean canBeAttacked) {
         super(texture, x, y, hitboxWidth, hitboxHeight, lives, entityManager, speed,
             walkTexture, walkTexture, attackTexture, attackTexture, type, attackCooldown, damage, energy, canBeAttacked,0);
         this.animator = animator;
@@ -155,7 +155,7 @@ public class BossCharacter extends Character {
 
     public void resetAll() {
         this.isDashing = false;
-        this.setSpeed(getBASE_SPEED());
+        this.setSpeed(getBaseSpeed());
         this.forceSmashAccumulator = 0f;
         this.moveForceAccumulator = 0f;
         this.dashAttackAccumulator = 0f;

@@ -1,6 +1,8 @@
 package com.milne.mw.network;
 
+import com.badlogic.gdx.Game;
 import com.milne.mw.globals.GameData;
+import com.milne.mw.globals.NetworkData;
 
 import java.io.IOException;
 import java.net.*;
@@ -21,10 +23,12 @@ public class ClientThread extends Thread {
         } catch (SocketException | UnknownHostException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     @Override
     public void run() {
+
         while(!end){
             DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
             try {
@@ -38,7 +42,7 @@ public class ClientThread extends Thread {
 
     private void processMessage(DatagramPacket packet) {
         String message = new String(packet.getData()).trim();
-        System.out.println("Mensaje recibido: " + message);
+        //System.out.println("Mensaje recibido: " + message);
         String[] parts = message.split(specialChar);
         float x;
         float y;
@@ -46,6 +50,7 @@ public class ClientThread extends Thread {
         switch(parts[0]){
             case "connection":
                 manageConnection(parts[1], Integer.parseInt(parts[2]), packet.getAddress());
+                sendMessage("ping!" + GameData.clientNumber);
                 break;
             case "startgame":
                 GameData.networkListener.startGame();
@@ -54,7 +59,7 @@ public class ClientThread extends Thread {
                 GameData.networkListener.mapSelected(parts[1]);
                 break;
             case "createmap":
-                GameData.networkListener.createMap(parts[1],parts[2]);
+                GameData.networkListener.createMap(parts[1]);
                 break;
             case "addcards":
                 String cardImage = parts[1];
@@ -70,36 +75,49 @@ public class ClientThread extends Thread {
                 y = Float.parseFloat(parts[3]);
                 float hitboxWidth = Float.parseFloat(parts[5]);
                 float hitboxHeight = Float.parseFloat(parts[6]);
-                GameData.networkListener.spawnentity(id,x,y,parts[4],hitboxWidth,hitboxHeight);
+                GameData.networkListener.addEntity(id,x,y,parts[4],hitboxWidth,hitboxHeight);
                 break;
-            case "position":
-               // GameData.networkListener.updateDinoPosition(Integer.parseInt(parts[3]),Float.parseFloat(parts[1]), Float.parseFloat(parts[2]));
+            case "updateplayerstate":
+                int lives = Integer.parseInt(parts[1]);
+                int energy = Integer.parseInt(parts[2]);
+                GameData.networkListener.updatePlayerState(lives,energy);
                 break;
-            case "enemy":
-               // handleEnemy(parts);
+            case "updateround":
+                GameData.networkListener.updateRound(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
                 break;
-            case "scoredistance":
-               // GameData.networkListener.setScoreDistance(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+            case "moveentity":
+                GameData.networkListener.moveEntity(Integer.parseInt(parts[1]),Float.parseFloat(parts[2]),Float.parseFloat(parts[3]));
+                break;
+            case "animatetextureentity":
+                GameData.networkListener.animateTextureEntity(Integer.parseInt(parts[1]),parts[2]);
+                break;
+            case "removeentity":
+                GameData.networkListener.removeEntity(Integer.parseInt(parts[1]));
+                break;
+            case "bombexplode":
+                GameData.networkListener.exploteBomb(Integer.parseInt(parts[1]),Float.parseFloat(parts[2]),Float.parseFloat(parts[3]),parts[4],Float.parseFloat(parts[5]),Float.parseFloat(parts[6]));
+                break;
+            case "bossattack":
+                GameData.networkListener.drawBossAttack(parts[1],parts[2],Float.parseFloat(parts[3]),Float.parseFloat(parts[4]),Float.parseFloat(parts[5]),Float.parseFloat(parts[6]));
+                break;
+            case "bossattackupdate":
+                System.out.println("Actualizando ataque jefe: ");
+                GameData.networkListener.updateBossAttack(parts[1],Float.parseFloat(parts[2]),Float.parseFloat(parts[3]));
+                break;
+            case "bossattackremove":
+                GameData.networkListener.bossAttackRemove(parts[1]);
                 break;
             case "gameover":
-               // GameData.networkListener.gameOver();
+                GameData.networkListener.gameOver();
+                break;
+            case "win":
+                GameData.networkListener.win();
+                break;
+            case "endgame":
+                GameData.networkListener.endGame();
                 break;
         }
 
-    }
-
-    private void handleEnemy(String[] parts) {
-        switch(parts[1]){
-            case "create":
-               // GameData.networkListener.addEnemy(Float.parseFloat(parts[2]), Float.parseFloat(parts[3]));
-                break;
-            case "move":
-              //  GameData.networkListener.moveEnemy(Integer.parseInt(parts[2]), Float.parseFloat(parts[3]), Float.parseFloat(parts[4]));
-                break;
-            case "remove":
-              //  GameData.networkListener.removeEnemy(Integer.parseInt(parts[2]));
-                break;
-        }
     }
 
     private void manageConnection(String state, int clientNumber, InetAddress serverIp) {
@@ -107,6 +125,7 @@ public class ClientThread extends Thread {
         switch(state){
             case "successful":
                 GameData.clientNumber = clientNumber;
+                System.out.println(clientNumber);
                 break;
         }
     }

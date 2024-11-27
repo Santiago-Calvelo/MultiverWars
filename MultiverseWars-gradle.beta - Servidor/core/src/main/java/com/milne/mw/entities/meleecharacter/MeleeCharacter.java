@@ -12,8 +12,8 @@ public class MeleeCharacter extends com.milne.mw.entities.Character {
     private Character targetEnemy;
     private SpecialAttack specialAttack;
 
-    public MeleeCharacter(Texture texture, int hitboxWidth, int hitboxHeight, Texture attack1Texture,
-                          Texture attack2Texture, Texture walk1Texture, Texture walk2Texture,
+    public MeleeCharacter(String texture, int hitboxWidth, int hitboxHeight, String attack1Texture,
+                          String attack2Texture, Texture walk1Texture, Texture walk2Texture,
                           float x, float y, int lives, int speed, EntityManager entityManager,
                           String type, float attackCooldown, int damage, int energy, boolean canBeAttacked, SpecialAttack specialAttack, int damageToPlayer) {
         super(texture, x, y, hitboxWidth, hitboxHeight, lives, entityManager, speed, walk1Texture,
@@ -26,20 +26,24 @@ public class MeleeCharacter extends com.milne.mw.entities.Character {
     public void attack() {
 
         if (targetEnemy != null && targetEnemy.getCanBeAttacked()) {
+            this.isAttacking = true;
             if (specialAttack != null) {
                 RunnableAction attackAndRemoveCharacter = new RunnableAction();
                 attackAndRemoveCharacter.setRunnable(() -> {
                     targetEnemy.takeDamage(this.getDamage());
                     this.removeCharacter();
+                    this.isAttacking = false;
                 });
                 this.specialAttack.execute(this,targetEnemy);
                 this.getImage().addAction(Actions.sequence(
                     Actions.delay(this.getAttackCooldown()),
                     attackAndRemoveCharacter
                 ));
+
             } else {
                 targetEnemy.takeDamage(getDamage());
                 targetEnemy = null;
+                this.isAttacking = false;
             }
         }
 

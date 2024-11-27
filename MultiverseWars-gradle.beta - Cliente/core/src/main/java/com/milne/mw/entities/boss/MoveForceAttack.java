@@ -38,7 +38,7 @@ public class MoveForceAttack implements BossAttack {
         float targetX = targetHitbox.x + targetHitbox.width / 2 - tower.getHitbox().getWidth() / 2;
         float targetY = targetHitbox.y + targetHitbox.height / 2 - tower.getHitbox().getHeight() / 2;
 
-        entityManager.releasePosition(tower);
+        //entityManager.releasePosition(tower);
         tower.pause();
 
         MoveToAction moveAction = new MoveToAction();

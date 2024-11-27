@@ -51,7 +51,7 @@ public class Projectile {
     private void checkForCollision() {
         if (targetEnemy != null && hitbox.overlaps(targetEnemy.getHitbox())) {
             targetEnemy.takeDamage(damage);
-            entityManager.removeProjectile(this);
+            //entityManager.removeProjectile(this);
         }
     }
 

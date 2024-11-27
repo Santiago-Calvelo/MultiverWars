@@ -1,6 +1,8 @@
 package com.milne.mw.network;
 
+import com.badlogic.gdx.Game;
 import com.milne.mw.globals.GameData;
+import com.milne.mw.globals.NetworkData;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -32,20 +34,25 @@ public class ServerThread extends Thread {
 
     @Override
     public void run() {
+
         while(!end){
+
             DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
             try {
                 socket.receive(packet);
                 processMessage(packet);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+
             }
+
+
         }
     }
 
+
     private void processMessage(DatagramPacket packet) {
         String message = new String(packet.getData()).trim();
-        System.out.println("Mensaje recibido: " + message);
+        //System.out.println("Mensaje recibido: " + message);
         String[] parts = message.split(specialChar);
 
         switch(parts[0]) {
@@ -56,15 +63,28 @@ public class ServerThread extends Thread {
                 }
                 break;
             case "disconnect":
+                GameData.finishedGame = true;
                 int numClient = Integer.parseInt(parts[1]);
                 numClient = (numClient==1)?0:1;
                 clientsConnected--;
                 if(clientsConnected>0) {
+                    System.out.println("Cantidad de clientes: " + clients.length);
                     this.sendMessage("gameover", this.clients[numClient].getIp(), this.clients[numClient].getPort());
                 }
-                this.clearClients();
-                GameData.networkListener.endGame();
+
+                if (clientsConnected == 0) {
+                    this.clearClients();
+                    GameData.networkListener.endGame();
+                }
                 break;
+            case "disconnectboth":
+                GameData.finishedGame = true;
+                clientsConnected--;
+
+                if (clientsConnected == 0) {
+                    this.clearClients();
+                    GameData.networkListener.endGame();
+                }
         }
 
         if(clientsConnected == MAX_CLIENTS) {
@@ -75,12 +95,13 @@ public class ServerThread extends Thread {
                     break;
                 case "difficultyselected":
                     difficulty = parts[1];
-                    sendMessageToAll("createmap!" + map + "!" + difficulty);
+                    sendMessageToAll("createmap!" + map);
                     break;
                 case "readyforgame":
                     clientsReady++;
                     if (clientsReady == clientsConnected) {
                         GameData.networkListener.createMap(map,difficulty);
+                        GameData.finishedGame = false;
                     }
                     break;
                 case "spawntower":
@@ -88,26 +109,23 @@ public class ServerThread extends Thread {
                     float y = Float.parseFloat(parts[3]);
                     float cardWidth = Float.parseFloat(parts[4]);
                     float cardHeight = Float.parseFloat(parts[5]);
-                    GameData.networkListener.spawnTower(parts[1],x,y,cardWidth,cardHeight);
+                    int numberPlayer = Integer.parseInt(parts[6]);
+                    GameData.networkListener.spawnTower(parts[1],x,y,cardWidth,cardHeight,numberPlayer);
                     break;
             }
         }
 
-
-
     }
 
     private boolean connectClient(DatagramPacket packet) {
-        if(clientsConnected < MAX_CLIENTS){
+        if(clientsConnected < MAX_CLIENTS && !GameData.finishedGame){
             if(!clientExists(packet.getAddress(), packet.getPort())){
                 addClient(packet);
                 sendMessage("connection" + specialChar + "successful" + specialChar + (clientsConnected-1),  packet.getAddress(), packet.getPort());
                 return true;
-            } else {
-                // EL CLIENTE YA EXISTE
             }
         } else {
-            //PODRIA MANDARLE UN MENSAJE AL CLIENTE DICIENDO QUE SE RECHAZO LA CONEXION PQ EL SERVER ESTA LLENO
+            sendMessage("servidor lleno", packet.getAddress(), packet.getPort());
         }
         return false;
     }
@@ -143,6 +161,10 @@ public class ServerThread extends Thread {
         for (int i = 0; i < clientsConnected; i++) {
             sendMessage(msg, clients[i].getIp(), clients[i].getPort());
         }
+    }
+
+    public Client[] getClients() {
+        return clients;
     }
 
     public void clearClients() {

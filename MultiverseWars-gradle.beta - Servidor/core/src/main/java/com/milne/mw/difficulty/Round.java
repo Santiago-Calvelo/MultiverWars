@@ -2,13 +2,11 @@ package com.milne.mw.difficulty;
 
 import com.milne.mw.entities.EntityType;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Round {
-    private final ArrayList<EntityType> enemies;
-    private final ArrayList<Float> yPositions;
-    private final int roundNumber;
+    private ArrayList<EntityType> enemies;
+    private ArrayList<Float> yPositions;
+    private int roundNumber;
 
     // Constructor opcional para añadir enemigos de forma directa
     public Round(int roundNumber, EnemySpawn... enemySpawns) {
@@ -17,7 +15,7 @@ public class Round {
         this.yPositions = new ArrayList<>();
 
         for (EnemySpawn spawn : enemySpawns) {
-            this.enemies.add(spawn.getEntityType());
+            this.enemies.add(spawn.getENTITY_TYPE());
             this.yPositions.add(spawn.getYPosition());
         }
     }
