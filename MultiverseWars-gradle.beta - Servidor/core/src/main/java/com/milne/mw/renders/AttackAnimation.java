@@ -5,8 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.milne.mw.entities.Character;
 
 public class AttackAnimation {
-    private final Character character;
-    private final float duration;
+    private Character character;
+    private float duration;
     private float animationTime;
 
     public AttackAnimation(Character character, float duration) {

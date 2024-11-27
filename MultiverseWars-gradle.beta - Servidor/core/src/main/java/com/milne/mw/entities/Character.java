@@ -8,11 +8,15 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.milne.mw.difficulty.Difficulty;
 import com.milne.mw.entities.flycharacter.FlyCharacter;
+import com.milne.mw.globals.GameData;
+import com.milne.mw.globals.Global;
+import com.milne.mw.globals.NetworkData;
 import com.milne.mw.renders.RenderManager;
 
 public abstract class Character {
     protected Image image;
-    private final Rectangle hitbox;
+    private String imageDirection;
+    private final Rectangle HITBOX;
     private int lives;
     private EntityType entityType;
     protected EntityManager entityManager;
@@ -22,7 +26,7 @@ public abstract class Character {
     private boolean isMoving, canAttack;
     private final float attackCooldown;
     private float cooldownElapsed;
-    private final String type;
+    private final String TYPE;
     private int damage, energy;
     private final int BASE_LIVES, BASE_SPEED, BASE_DAMAGE;
     private int lastScaledRound = -1;
@@ -30,18 +34,20 @@ public abstract class Character {
     private int damageToPlayer;
     private float targetX;
     private final float RIGHT_LIMIT, LEFT_LIMIT;
+    private int id;
 
-    public Character(Texture texture, float x, float y, int hitboxWidth, int hitboxHeight, int lives,
+    public Character(String texture, float x, float y, int hitboxWidth, int hitboxHeight, int lives,
                      EntityManager entityManager, int speed,
                      Texture walk1Texture, Texture walk2Texture, Texture attack1Texture,
                      Texture attack2Texture, String type,
                      float attackCooldown, int damage, int energy, boolean canBeAttacked, int damageToPlayer) {
-        this.image = new Image(texture);
+        this.imageDirection = texture;
+        this.image = new Image(Global.loadTexture(texture));
         this.image.setPosition(x, y);
         if (!(this instanceof FlyCharacter)) {
             this.image.setSize(hitboxWidth, hitboxHeight);
         }
-        this.hitbox = new Rectangle(x, y, hitboxWidth, hitboxHeight);
+        this.HITBOX = new Rectangle(x, y, hitboxWidth, hitboxHeight);
         this.lives = lives;
         this.BASE_LIVES = lives;
         this.entityManager = entityManager;
@@ -52,7 +58,7 @@ public abstract class Character {
         this.isMoving = false;
         this.speed = speed;
         this.BASE_SPEED = speed;
-        this.type = type;
+        this.TYPE = type;
         this.canAttack = false;
         this.attackCooldown = attackCooldown;
         this.cooldownElapsed = 0;
@@ -72,7 +78,7 @@ public abstract class Character {
 
     public void startMovement() {
         moveAction = new MoveToAction();
-        float distanceX = Math.abs(hitbox.x - targetX);
+        float distanceX = Math.abs(HITBOX.x - targetX);
         float duration = distanceX / speed;
         moveAction.setPosition(targetX, getHitbox().y);
         moveAction.setDuration(duration);
@@ -156,7 +162,7 @@ public abstract class Character {
     }
 
     public Image getImage() { return image; }
-    public String getType() { return type; }
+    public String getType() { return TYPE; }
     public Texture getWalk1Texture() { return walk1Texture; }
     public Texture getWalk2Texture() { return walk2Texture; }
     public Texture getAttack1Texture() { return attack1Texture; }
@@ -171,8 +177,11 @@ public abstract class Character {
     }
 
     public Rectangle getHitbox() {
-        hitbox.setPosition(image.getX(), image.getY());
-        return hitbox;
+        HITBOX.setPosition(image.getX(), image.getY());
+        if (Global.multiplayer) {
+            NetworkData.serverThread.sendMessageToAll("moveentity!"+ id + "!" + HITBOX.x + "!" + HITBOX.y);
+        }
+        return HITBOX;
     }
 
     public float getRIGHT_LIMIT() {
@@ -200,7 +209,7 @@ public abstract class Character {
     }
 
     public Vector2 getHitboxCenter() {
-        return new Vector2(hitbox.x + hitbox.width / 2, hitbox.y + hitbox.height / 2);
+        return new Vector2(HITBOX.x + HITBOX.width / 2, HITBOX.y + HITBOX.height / 2);
     }
 
     public void dispose() {
@@ -214,6 +223,18 @@ public abstract class Character {
 
     public int getDamageToPlayer() {
         return damageToPlayer;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getImageDirection() {
+        return imageDirection;
     }
 }
 

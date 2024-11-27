@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.milne.mw.MusicManager;
 import com.milne.mw.globals.GameData;
+import com.milne.mw.globals.NetworkData;
 import com.milne.mw.screens.MainMenuScreen;
 
 import static com.milne.mw.globals.Global.loadTexture;
@@ -18,16 +19,12 @@ public class VictoryMenu {
     private TextButton mainMenuButton;
     private Image victoryBackground;
     private Stage stage;
-    private PauseMenu pauseMenu;
 
-    public VictoryMenu(Stage stage, PauseMenu pauseMenu) {
+    public VictoryMenu(Stage stage) {
         this.stage = stage;
-        this.pauseMenu = pauseMenu;
     }
 
     public void createMenu() {
-        pauseMenu.setEnable(false);
-        pauseMenu.togglePause();
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.font = new BitmapFont();
         textButtonStyle.fontColor = Color.WHITE;
@@ -41,7 +38,12 @@ public class VictoryMenu {
         mainMenuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.postRunnable(() -> GameData.game.setScreen(new MainMenuScreen()));
+                Gdx.app.postRunnable(() -> {
+                    NetworkData.clientThread.sendMessage("disconnectboth!");
+                    NetworkData.clientThread.end();
+                    NetworkData.clientThread = null;
+                    GameData.game.setScreen(new MainMenuScreen());
+                });
                 MusicManager.playMusic("bye bye.mp3");
             }
         });

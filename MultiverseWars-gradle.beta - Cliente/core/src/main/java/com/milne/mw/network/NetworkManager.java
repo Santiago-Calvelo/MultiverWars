@@ -24,34 +24,93 @@ public class NetworkManager implements NetworkListener {
     }
 
     @Override
-    public void createMap(String map, String difficulty) {
+    public void createMap(String map) {
         Gdx.app.postRunnable(() -> {
-            GameData.game.setScreen(new MapScreen(map, Difficulty.valueOf(difficulty)));
+            GameData.game.setScreen(new MapScreen(map));
+
+            if (GameData.game.getScreen() instanceof MapScreen) {
+                this.mapScreen = (MapScreen) GameData.game.getScreen();
+            }
         });
 
     }
 
     @Override
-    public void spawnentity(int id, float x, float y, String entityImage, float hitboxWidth, float hitboxHeight) {
-        if (GameData.game.getScreen() instanceof MapScreen) {
-            mapScreen = (MapScreen) GameData.game.getScreen();
-            System.out.println("Ingrese al if");
-            Gdx.app.postRunnable(() -> {
-                mapScreen.spawnEntity(id,x,y,entityImage,hitboxWidth,hitboxHeight);
-            });
-        }
+    public void addEntity(int id, float x, float y, String entityImage, float hitboxWidth, float hitboxHeight) {
+        Gdx.app.postRunnable(() -> {
+            this.mapScreen.addEntity(id,x,y,entityImage,hitboxWidth,hitboxHeight);
+        });
     }
 
     @Override
     public void addCardsToPanel(String cardImage, float x, float y, int width, int height, String entityType) {
-        System.out.println(GameData.game.getScreen());
-        if (GameData.game.getScreen() instanceof MapScreen) {
-            mapScreen = (MapScreen) GameData.game.getScreen();
-            System.out.println("Ingrese al if");
-            Gdx.app.postRunnable(() -> {
-                mapScreen.addCardsToPanel(cardImage,x,y,width,height,entityType);
-            });
-        }
-
+        Gdx.app.postRunnable(() -> {
+            this.mapScreen.addCardsToPanel(cardImage,x,y,width,height,entityType);
+        });
     }
+
+    @Override
+    public void updatePlayerState(int lives, int energy) {
+        Gdx.app.postRunnable(() -> {
+            this.mapScreen.getRenderManager().updatePlayerLabels(lives,energy);
+        });
+    }
+
+    @Override
+    public void moveEntity(int id, float currentX, float currentY) {
+        Gdx.app.postRunnable(() -> {
+            this.mapScreen.moveEntity(id,currentX,currentY);
+        });
+    }
+
+    @Override
+    public void removeEntity(int id) {
+        Gdx.app.postRunnable(() ->  {
+            this.mapScreen.removeEntity(id);
+        });
+    }
+
+    @Override
+    public void updateRound(int currentRound, int maxRound) {
+        Gdx.app.postRunnable(() -> {
+            this.mapScreen.getRenderManager().updateRoundLabels(currentRound,maxRound);
+        });
+    }
+
+    @Override
+    public void drawBossAttack(String idAttack, String texture, float x, float y, float width, float height) {
+        Gdx.app.postRunnable(() ->  {
+            this.mapScreen.getRenderManager().drawBossAttack(idAttack,texture,x,y,width,height);
+        });
+    }
+
+    @Override
+    public void updateBossAttack(String idAttack, float x, float y) {
+        Gdx.app.postRunnable(() -> {
+            this.mapScreen.getRenderManager().updateBossAttack(idAttack,x,y);
+        });
+    }
+
+    @Override
+    public void bossAttackRemove(String idAttack) {
+        Gdx.app.postRunnable(() -> {
+            this.mapScreen.getRenderManager().removeBossAttack(idAttack);
+        });
+    }
+
+    @Override
+    public void gameOver() {
+        Gdx.app.postRunnable(() -> {
+            this.mapScreen.createGameOverMenu();
+        });
+    }
+
+    @Override
+    public void win() {
+        Gdx.app.postRunnable(() -> {
+            this.mapScreen.createVictoryMenu();
+        });
+    }
+
+
 }

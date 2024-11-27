@@ -1,4 +1,5 @@
 package com.milne.mw.network;
+import com.milne.mw.player.Player;
 import java.net.InetAddress;
 
 public class Client {
@@ -6,6 +7,7 @@ public class Client {
     private InetAddress ip;
     private int port;
     private int number;
+    private Player player;
 
     public Client(InetAddress ip, int port, int number) {
         this.ip = ip;
@@ -25,4 +27,11 @@ public class Client {
         return number;
     }
 
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
 }

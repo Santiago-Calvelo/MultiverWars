@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.milne.mw.MusicManager;
 import com.milne.mw.entities.EntityManager;
 import com.milne.mw.globals.GameData;
+import com.milne.mw.globals.NetworkData;
 import com.milne.mw.screens.MainMenuScreen;
 
 import static com.milne.mw.globals.Global.loadTexture;
@@ -22,15 +23,13 @@ public class PauseMenu {
     private TextButton resumeButton;
     private TextButton mainMenuButton;
     private boolean isPaused = false;
-    private EntityManager entityManager;
     private Image pauseBackground;
     private Circle pauseButtonHitbox;
     private Stage stage;
     private boolean enable = true;
 
-    public PauseMenu(Stage stage, EntityManager entityManager) {
+    public PauseMenu(Stage stage) {
         this.stage = stage;
-        this.entityManager = entityManager;
 
         pauseButtonHitbox = new Circle(stage.getViewport().getWorldWidth() - 257, stage.getViewport().getWorldHeight() - 40, 30);
         createPauseMenuButtons();
@@ -58,7 +57,12 @@ public class PauseMenu {
         mainMenuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.postRunnable(() -> GameData.game.setScreen(new MainMenuScreen()));
+                Gdx.app.postRunnable(() -> {
+                    NetworkData.clientThread.sendMessage("disconnect!" + GameData.clientNumber);
+                    NetworkData.clientThread.end();
+                    NetworkData.clientThread = null;
+                    GameData.game.setScreen(new MainMenuScreen());
+                });
                 MusicManager.playMusic("bye bye.mp3");
             }
         });
@@ -80,12 +84,8 @@ public class PauseMenu {
         isPaused = !isPaused;
 
         if (isPaused) {
-            entityManager.pause();
-            MusicManager.pauseMusic();
             addPauseMenuToStage();
         } else {
-            entityManager.resume();
-            MusicManager.resumeMusic();
             removePauseMenuFromStage();
         }
     }
@@ -94,6 +94,9 @@ public class PauseMenu {
         stage.addActor(pauseBackground);
         stage.addActor(resumeButton);
         stage.addActor(mainMenuButton);
+        pauseBackground.setZIndex(20);
+        resumeButton.setZIndex(20);
+        mainMenuButton.setZIndex(20);
     }
 
     private void removePauseMenuFromStage() {
@@ -104,14 +107,6 @@ public class PauseMenu {
 
     public Circle getPauseButtonHitbox() {
         return pauseButtonHitbox;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
-    public boolean getIsPaused() {
-        return isPaused;
     }
 
     public void dispose() {

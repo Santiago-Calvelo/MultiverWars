@@ -8,7 +8,7 @@
 
     public abstract class FlyCharacter extends Character {
 
-        public FlyCharacter(Texture texture, int hitboxWidth, int hitboxHeight, Texture walkTexture,
+        public FlyCharacter(String texture, int hitboxWidth, int hitboxHeight, Texture walkTexture,
                             Texture attackTexture, float x, float y, int lives, int speed,
                             EntityManager entityManager, String type, float attackCooldown,
                             int damage, int energy, boolean canBeAttacked) {

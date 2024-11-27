@@ -7,13 +7,13 @@ import com.milne.mw.entities.Character;
 import com.milne.mw.entities.EntityManager;
 
 public class RangedCharacter extends com.milne.mw.entities.Character {
-    private final Texture projectileTexture;
-    private com.milne.mw.entities.Character targetEnemy;
-    private final int range;
+    private String projectileTexture;
+    private Character targetEnemy;
+    private int range;
 
-    public RangedCharacter(Texture texture, int hitboxWidth, int hitboxHeight, Texture walk1Texture,
+    public RangedCharacter(String texture, int hitboxWidth, int hitboxHeight, Texture walk1Texture,
                            Texture walk2Texture, Texture attack1Texture, Texture attack2Texture,
-                           Texture projectileTexture, float x, float y, int lives,
+                           String projectileTexture, float x, float y, int lives,
                            int speed, EntityManager entityManager,
                            String type, int range, float attackCooldown, int damage, int energy, boolean canBeAttacked, int damageToPlayer) {
         super(texture, x, y, hitboxWidth, hitboxHeight, lives, entityManager, speed,

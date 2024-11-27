@@ -1,5 +1,6 @@
 package com.milne.mw.network;
 
+import com.badlogic.gdx.Game;
 import com.milne.mw.globals.GameData;
 
 import java.io.IOException;
@@ -54,7 +55,7 @@ public class ClientThread extends Thread {
                 GameData.networkListener.mapSelected(parts[1]);
                 break;
             case "createmap":
-                GameData.networkListener.createMap(parts[1],parts[2]);
+                GameData.networkListener.createMap(parts[1]);
                 break;
             case "addcards":
                 String cardImage = parts[1];
@@ -70,36 +71,39 @@ public class ClientThread extends Thread {
                 y = Float.parseFloat(parts[3]);
                 float hitboxWidth = Float.parseFloat(parts[5]);
                 float hitboxHeight = Float.parseFloat(parts[6]);
-                GameData.networkListener.spawnentity(id,x,y,parts[4],hitboxWidth,hitboxHeight);
+                GameData.networkListener.addEntity(id,x,y,parts[4],hitboxWidth,hitboxHeight);
                 break;
-            case "position":
-               // GameData.networkListener.updateDinoPosition(Integer.parseInt(parts[3]),Float.parseFloat(parts[1]), Float.parseFloat(parts[2]));
+            case "updateplayerstate":
+                int lives = Integer.parseInt(parts[1]);
+                int energy = Integer.parseInt(parts[2]);
+                GameData.networkListener.updatePlayerState(lives,energy);
                 break;
-            case "enemy":
-               // handleEnemy(parts);
+            case "updateround":
+                GameData.networkListener.updateRound(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
                 break;
-            case "scoredistance":
-               // GameData.networkListener.setScoreDistance(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+            case "moveentity":
+                GameData.networkListener.moveEntity(Integer.parseInt(parts[1]),Float.parseFloat(parts[2]),Float.parseFloat(parts[3]));
+                break;
+            case "removeentity":
+                GameData.networkListener.removeEntity(Integer.parseInt(parts[1]));
+                break;
+            case "bossattack":
+                GameData.networkListener.drawBossAttack(parts[1],parts[2],Float.parseFloat(parts[3]),Float.parseFloat(parts[4]),Float.parseFloat(parts[5]),Float.parseFloat(parts[6]));
+                break;
+            case "bossattackupdate":
+                GameData.networkListener.updateBossAttack(parts[1],Float.parseFloat(parts[2]),Float.parseFloat(parts[2]));
+                break;
+            case "bossattackremove":
+                GameData.networkListener.bossAttackRemove(parts[1]);
                 break;
             case "gameover":
-               // GameData.networkListener.gameOver();
+                GameData.networkListener.gameOver();
+                break;
+            case "win":
+                GameData.networkListener.win();
                 break;
         }
 
-    }
-
-    private void handleEnemy(String[] parts) {
-        switch(parts[1]){
-            case "create":
-               // GameData.networkListener.addEnemy(Float.parseFloat(parts[2]), Float.parseFloat(parts[3]));
-                break;
-            case "move":
-              //  GameData.networkListener.moveEnemy(Integer.parseInt(parts[2]), Float.parseFloat(parts[3]), Float.parseFloat(parts[4]));
-                break;
-            case "remove":
-              //  GameData.networkListener.removeEnemy(Integer.parseInt(parts[2]));
-                break;
-        }
     }
 
     private void manageConnection(String state, int clientNumber, InetAddress serverIp) {
@@ -107,6 +111,7 @@ public class ClientThread extends Thread {
         switch(state){
             case "successful":
                 GameData.clientNumber = clientNumber;
+                System.out.println(clientNumber);
                 break;
         }
     }

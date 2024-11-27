@@ -35,6 +35,7 @@ public class TwoPlayerModeScreen implements Screen {
     @Override
     public void show() {
         Global.multiplayer = true;
+        GameData.finishedGame = false;
 
         NetworkData.serverThread = new ServerThread();
         NetworkData.serverThread.start();

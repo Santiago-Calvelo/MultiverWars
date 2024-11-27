@@ -12,7 +12,7 @@ public class MeleeCharacter extends com.milne.mw.entities.Character {
     private Character targetEnemy;
     private SpecialAttack specialAttack;
 
-    public MeleeCharacter(Texture texture, int hitboxWidth, int hitboxHeight, Texture attack1Texture,
+    public MeleeCharacter(String texture, int hitboxWidth, int hitboxHeight, Texture attack1Texture,
                           Texture attack2Texture, Texture walk1Texture, Texture walk2Texture,
                           float x, float y, int lives, int speed, EntityManager entityManager,
                           String type, float attackCooldown, int damage, int energy, boolean canBeAttacked, SpecialAttack specialAttack, int damageToPlayer) {

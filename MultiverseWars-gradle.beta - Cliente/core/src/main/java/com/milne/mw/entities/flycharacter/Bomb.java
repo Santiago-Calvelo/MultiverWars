@@ -29,7 +29,7 @@ public class Bomb {
         this.explosionRange = new Circle(x + image.getWidth() / 2, y + image.getHeight() / 2, explosionRadius);
 
         moveDownward(targetY);
-        entityManager.addBomb(this);
+        //entityManager.addBomb(this);
     }
 
     private void moveDownward(float targetY) {
@@ -74,7 +74,7 @@ public class Bomb {
         isDetonated = true;
         image.addAction(Actions.sequence(
             Actions.delay(explosionDisplayTime),
-            Actions.run(() -> entityManager.removeBomb(this)),
+            //Actions.run(() -> entityManager.removeBomb(this)),
             Actions.run(this::dispose)
         ));
     }

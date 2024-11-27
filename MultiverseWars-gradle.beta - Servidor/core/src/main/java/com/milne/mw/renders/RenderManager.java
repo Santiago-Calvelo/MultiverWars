@@ -12,8 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.milne.mw.entities.Character;
 import com.milne.mw.entities.EntityManager;
+import com.milne.mw.globals.GameData;
 import com.milne.mw.globals.Global;
+import com.milne.mw.globals.NetworkData;
 import com.milne.mw.menu.PauseMenu;
+import com.milne.mw.network.ServerThread;
 import com.milne.mw.player.Player;
 
 import java.util.ArrayList;
@@ -121,12 +124,21 @@ public class RenderManager {
     }
 
     private void updateLabels(int currentRound) {
-        if (this.currentRound != currentRound) {
-            this.currentRound = currentRound;
+        if (Global.multiplayer) {
+            for (int i = 0; i < NetworkData.serverThread.getClients().length; i++) {
+                if (NetworkData.serverThread.getClients()[i] != null) {
+                    NetworkData.serverThread.sendMessage("updateplayerstate" + "!" + NetworkData.serverThread.getClients()[i].getPlayer().getLives() + "!" + NetworkData.serverThread.getClients()[i].getPlayer().getEnergy(), NetworkData.serverThread.getClients()[i].getIp(), NetworkData.serverThread.getClients()[i].getPort());
+                }
+            }
         }
-        roundLabel.setText(currentRound + "/" + maxRound);
-        livesLabel.setText("Vidas: " + player.getLives());
-        energyLabel.setText("Energía: " + player.getEnergy());
+        else {
+            if (this.currentRound != currentRound) {
+                this.currentRound = currentRound;
+            }
+            roundLabel.setText(currentRound + "/" + maxRound);
+            livesLabel.setText("Vidas: " + player.getLives());
+            energyLabel.setText("Energía: " + player.getEnergy());
+        }
     }
 
     public void initializeLabels(int currentRound) {

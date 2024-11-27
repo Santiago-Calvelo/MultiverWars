@@ -7,7 +7,7 @@ import com.milne.mw.entities.EntityType;
 
 public class Plane extends FlyCharacter{
     private int enemiesSpawned = 0;
-    public Plane(Texture texture, int hitboxWidth, int hitboxHeight, Texture walkTexture, Texture attackTexture, float x, float y, int lives, int speed, EntityManager entityManager, String type, float attackCooldown, int damage, int energy, boolean canBeAttacked) {
+    public Plane(String texture, int hitboxWidth, int hitboxHeight, Texture walkTexture, Texture attackTexture, float x, float y, int lives, int speed, EntityManager entityManager, String type, float attackCooldown, int damage, int energy, boolean canBeAttacked) {
         super(texture, hitboxWidth, hitboxHeight, walkTexture, attackTexture, x, y, lives, speed, entityManager, type, attackCooldown, damage, energy, canBeAttacked);
     }
 

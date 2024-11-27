@@ -8,9 +8,9 @@ import com.milne.mw.entities.EntityManager;
 import com.milne.mw.entities.EntityType;
 
 public class CardDragListener extends InputListener {
-    private final EntityManager entityManager;
-    private final EntityType entityType;
-    private final Image cardImage;
+    private EntityManager entityManager;
+    private EntityType entityType;
+    private Image cardImage;
     private float originalX;
     private float originalY;
     private boolean isDragging = false;

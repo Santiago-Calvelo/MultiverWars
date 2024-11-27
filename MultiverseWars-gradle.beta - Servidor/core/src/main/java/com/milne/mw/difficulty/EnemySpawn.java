@@ -3,19 +3,19 @@ package com.milne.mw.difficulty;
 import com.milne.mw.entities.EntityType;
 
 public class EnemySpawn {
-    private final Float yPosition;
-    private final EntityType entityType;
+    private final Float Y_POSITION;
+    private final EntityType ENTITY_TYPE;
 
     public EnemySpawn(Float yPosition, EntityType entityType) {
-        this.yPosition = yPosition;
-        this.entityType = entityType;
+        this.Y_POSITION = yPosition;
+        this.ENTITY_TYPE = entityType;
     }
 
     public Float getYPosition() {
-        return yPosition;
+        return Y_POSITION;
     }
 
-    public EntityType getEntityType() {
-        return entityType;
+    public EntityType getENTITY_TYPE() {
+        return ENTITY_TYPE;
     }
 }

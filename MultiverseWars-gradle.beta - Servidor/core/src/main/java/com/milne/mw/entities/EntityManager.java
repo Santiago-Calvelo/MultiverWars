@@ -1,5 +1,6 @@
 package com.milne.mw.entities;
 
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
@@ -9,6 +10,7 @@ import com.milne.mw.difficulty.RoundManager;
 import com.milne.mw.entities.boss.BossCharacter;
 import com.milne.mw.entities.flycharacter.Bomb;
 import com.milne.mw.entities.rangedcharacter.Projectile;
+import com.milne.mw.globals.GameData;
 import com.milne.mw.globals.Global;
 import com.milne.mw.globals.NetworkData;
 import com.milne.mw.menu.GameOverMenu;
@@ -18,7 +20,7 @@ import com.milne.mw.renders.BossAnimator;
 
 import java.util.*;
 
-import static com.milne.mw.globals.Global.loadTexture;
+
 
 public class EntityManager {
     private Stage stage;
@@ -50,6 +52,8 @@ public class EntityManager {
     private Array<EntityType> enemyList = new Array<>();
     private float enemiesSpawnAccumulator = 0;
     private float bossScalingFactor;
+    private int numberPlayer;
+    private int id = 0;
 
     public EntityManager(Stage stage, Difficulty difficultyLevel, Player player) {
         this.stage = stage;
@@ -62,6 +66,10 @@ public class EntityManager {
         initPlacementPoints();
 
         roundManager = new RoundManager();
+
+        if (Global.multiplayer) {
+            NetworkData.serverThread.sendMessageToAll("updateround!" + (currentRoundIndex+1) + "!" + difficultyLevel.getMaxRound());
+        }
     }
 
     public void initPlacementPoints() {
@@ -87,8 +95,8 @@ public class EntityManager {
         boolean placed = false;
         int i = 0;
         Rectangle cardArea = new Rectangle(x, y, cardWidth, cardHeight);
-
-        if (entityType.getEnergy() <= player.getEnergy() && !placementHitboxes.isEmpty()) {
+        int energyAvaible = Global.multiplayer ? NetworkData.serverThread.getClients()[numberPlayer].getPlayer().getEnergy() : player.getEnergy();
+        if (entityType.getEnergy() <= energyAvaible && !placementHitboxes.isEmpty()) {
             do {
                 Rectangle hitbox = placementHitboxes.get(i);
                 if (!positionMap.containsKey(i) && hitbox.overlaps(cardArea)) {
@@ -97,7 +105,11 @@ public class EntityManager {
                     Character entity = spawnEntity(entityType, centerX, centerY);
                     positionMap.put(i, entity);
                     placed = true;
-                    player.modifyEnergy(-entityType.getEnergy());
+                    if (Global.multiplayer) {
+                        NetworkData.serverThread.getClients()[numberPlayer].getPlayer().modifyEnergy(-entityType.getEnergy());
+                    } else {
+                        player.modifyEnergy(-entityType.getEnergy());
+                    }
                 }
                 i++;
             } while (!placed && i < placementHitboxes.size());
@@ -113,45 +125,69 @@ public class EntityManager {
         characters.add(entity);
         String entityImage = entityType.getTexturePath();
         if (Global.multiplayer) {
-            NetworkData.serverThread.sendMessageToAll("spawnentity!" + characters.indexOf(entity, true) + "!" + adjustedX + "!" + adjustedY + "!" + entityImage + "!" + entity.getHitbox().width + "!" + entity.getHitbox().height);
-        } else {
-            entity.getImage().setPosition(adjustedX, adjustedY);
-            stage.addActor(entity.getImage());
+            NetworkData.serverThread.sendMessageToAll("spawnentity!" + id + "!" + adjustedX + "!" + adjustedY + "!" + entityImage + "!" + entity.getImage().getWidth() + "!" + entity.getImage().getHeight());
+            entity.setId(id);
+            id++;
         }
+        entity.getImage().setPosition(adjustedX, adjustedY);
+        stage.addActor(entity.getImage());
 
         return entity;
     }
 
     public void spawnBossFinal(Character bossFinal, float x, float y) {
+        if (Global.multiplayer) {
+            NetworkData.serverThread.sendMessageToAll("spawnentity!" + id + "!" + x + "!" + y + "!" + bossFinal.getImageDirection() + "!" + bossFinal.getHitbox().width + "!" + bossFinal.getHitbox().height);
+            bossFinal.setId(id);
+            id++;
+        }
         bossFinal.getImage().setPosition(x, y);
         stage.addActor(bossFinal.getImage());
         characters.add(bossFinal);
     }
 
     public void addProjectile(Projectile projectile) {
+        if (Global.multiplayer) {
+            NetworkData.serverThread.sendMessageToAll("spawnentity!" + id + "!" + projectile.getHitbox().x + "!" + projectile.getHitbox().y + "!" + projectile.getTexture() + "!" + projectile.getHitbox().getWidth() + "!" + projectile.getHitbox().getHeight());
+            projectile.setId(id);
+            id++;
+        }
         projectiles.add(projectile);
         stage.addActor(projectile.getImage());
     }
 
     public void addBomb(Bomb bomb) {
-        bombs.add(bomb);
-        stage.addActor(bomb.getImage()); // Añadir la imagen de la bomba al escenario
+        if (!bombs.contains(bomb, true)) {
+            if (Global.multiplayer) {
+                NetworkData.serverThread.sendMessageToAll("spawnentity!" + id + "!" + bomb.getExplosionRange().x + "!" + bomb.getExplosionRange().y + "!" + bomb.getTexture() + "!" + bomb.getImage().getWidth() + "!" + bomb.getImage().getHeight());
+                bomb.setId(id);
+                id++;
+            }
+            bombs.add(bomb);
+            stage.addActor(bomb.getImage()); // Añadir la imagen de la bomba al escenario
+        }
     }
 
     public void removeBomb(Bomb bomb) {
+        if (Global.multiplayer) {
+            NetworkData.serverThread.sendMessageToAll("removeentity!" + bomb.getId());
+        }
         bombs.removeValue(bomb, true);
         stage.getActors().removeValue(bomb.getImage(), true);
         bomb.dispose();
     }
 
     public void removeProjectile(Projectile projectile) {
+        if (Global.multiplayer) {
+            NetworkData.serverThread.sendMessageToAll("removeentity!" + projectile.getId());
+        }
         projectiles.removeValue(projectile, true);
         stage.getActors().removeValue(projectile.getImage(), true);
         projectile.dispose();
     }
 
     public List<Rectangle> getPlacementHitboxes() {
-            return placementHitboxes;
+        return placementHitboxes;
     }
 
     public void startEnemySpawner() {
@@ -161,7 +197,6 @@ public class EntityManager {
 
     private void spawnRoundEnemy() {
         Round currentRound = roundManager.getRound(currentRoundIndex);
-
         if (!currentRound.getEnemies().isEmpty()) {
             EntityType enemyType = currentRound.getEnemy(0);
             currentRound.getEnemies().remove(0);
@@ -173,6 +208,9 @@ public class EntityManager {
             enemiesInGame++;
         } else if (enemiesInGame == 0 && !bossIsAlive) {
             currentRoundIndex++;
+            if (Global.multiplayer) {
+                NetworkData.serverThread.sendMessageToAll("updateround!" + (currentRoundIndex+1) + "!" + difficultyLevel.getMaxRound());
+            }
             scaleStatsAllPlacedCharacters();
         }
 
@@ -184,23 +222,20 @@ public class EntityManager {
             float adjustedX = stage.getViewport().getWorldWidth() - (float) hitboxWidth / 2;
             float adjustedY = 200.0f - (float) hitboxHeight / 2;
             bossFinal = new BossCharacter(
-                loadTexture("characters/boss/boss.png"),
+                "characters/boss/boss.png",
                 adjustedX,
                 adjustedY,
                 hitboxWidth, hitboxHeight,
                 difficultyLevel.getBossLives(),
                 this,
                 25,
-                loadTexture("characters/boss/boss.png"),
-                loadTexture("characters/boss/boss.png"),
-                loadTexture("characters/boss/force-aura.png"),
+                Global.loadTexture("characters/boss/boss.png"),
+                Global.loadTexture("characters/boss/boss.png"),
+                "characters/boss/force-aura.png",
                 "enemy", 0, 1, 0, animator, true
             );
             spawnBossFinal(bossFinal, adjustedX, adjustedY);
             bossScalingFactor = difficultyLevel.getBossScalingFactor();
-        } else if(currentRoundIndex > difficultyLevel.getMaxRound()) {
-            placementHitboxes.clear();
-            victoryMenu.createMenu();
         }
     }
 
@@ -245,7 +280,7 @@ public class EntityManager {
                 if (bossFinal.getLives() <= 0) {
                     bossIsAlive = false;
                     bossFinal = null;
-                    currentRoundIndex++;
+                    endGame();
                 }
                 bossScalingFactor *= delta;
 
@@ -261,11 +296,23 @@ public class EntityManager {
                 }
             }
 
-            player.update(delta);
+            if (Global.multiplayer) {
+                for (int i = 0; i < NetworkData.serverThread.getClients().length; i++) {
+                    NetworkData.serverThread.getClients()[i].getPlayer().update(delta);
+                }
 
-            if (!player.isAlive()) {
-                gameOverMenu.createMenu(player);
+                if (!NetworkData.serverThread.getClients()[0].getPlayer().isAlive() || !NetworkData.serverThread.getClients()[1].getPlayer().isAlive()) {
+                    gameOverMenu.togglePause();
+                    placementHitboxes.clear();
+                    NetworkData.serverThread.sendMessageToAll("gameover!");
+                }
+            } else {
+                player.update(delta);
+                if (!player.isAlive()) {
+                    gameOverMenu.createMenu(player);
+                }
             }
+
 
             removeOffScreenCharacters();
 
@@ -288,6 +335,16 @@ public class EntityManager {
                 bomb.update(delta);
             }
 
+        }
+    }
+
+    private void endGame() {
+        placementHitboxes.clear();
+        if (Global.multiplayer) {
+            victoryMenu.togglePause();
+            NetworkData.serverThread.sendMessageToAll("win!");
+        } else {
+            victoryMenu.createMenu();
         }
     }
 
@@ -315,7 +372,13 @@ public class EntityManager {
             Character character = characters.get(i);
             if (character.getHitbox().x == character.getLEFT_LIMIT()) {
                 character.setEnergy(0);
-                player.loseLife(character.getDamageToPlayer());
+                if (Global.multiplayer) {
+                    for (int j = 0; j < NetworkData.serverThread.getClients().length; j++) {
+                        NetworkData.serverThread.getClients()[j].getPlayer().loseLife(character.getDamageToPlayer());
+                    }
+                } else {
+                    player.loseLife(character.getDamageToPlayer());
+                }
                 character.takeDamage(character.getLives());
             }
         }
@@ -382,6 +445,9 @@ public class EntityManager {
             player.modifyEnergy(character.getEnergy());
             enemiesInGame--;
         }
+        if (Global.multiplayer) {
+            NetworkData.serverThread.sendMessageToAll("removeentity!" + character.getId());
+        }
         releasePosition(character);
         character.getImage().remove();
         stage.getActors().removeValue(character.getImage(), true);
@@ -419,6 +485,9 @@ public class EntityManager {
         }
         projectiles.clear();
 
+    }
+    public void setNumberPlayer(int numberPlayer) {
+        this.numberPlayer = numberPlayer;
     }
 
     public Array<Bomb> getBombs() {
