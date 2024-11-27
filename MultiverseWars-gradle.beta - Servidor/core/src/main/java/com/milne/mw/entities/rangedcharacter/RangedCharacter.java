@@ -12,7 +12,7 @@ public class RangedCharacter extends com.milne.mw.entities.Character {
     private int range;
 
     public RangedCharacter(String texture, int hitboxWidth, int hitboxHeight, Texture walk1Texture,
-                           Texture walk2Texture, Texture attack1Texture, Texture attack2Texture,
+                           Texture walk2Texture, String attack1Texture, String attack2Texture,
                            String projectileTexture, float x, float y, int lives,
                            int speed, EntityManager entityManager,
                            String type, int range, float attackCooldown, int damage, int energy, boolean canBeAttacked, int damageToPlayer) {
@@ -49,6 +49,7 @@ public class RangedCharacter extends com.milne.mw.entities.Character {
                 resumeMovement();
             }
             targetEnemy = null;
+            this.isAttacking = false;
         }
     }
 
@@ -60,6 +61,7 @@ public class RangedCharacter extends com.milne.mw.entities.Character {
             } else {
                 tryAttack();
             }
+            this.isAttacking = true;
         }
     }
 

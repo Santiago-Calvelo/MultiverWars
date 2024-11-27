@@ -18,7 +18,7 @@ public enum EntityType {
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new RangedCharacter(
                 getTexturePath(), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
-                loadTexture(getWalk2Path()), loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),
+                loadTexture(getWalk2Path()), getAttack1Path(), getAttack2Path(),
                 getProjectilePath(), x, y, getLives(), getSpeed(), entityManager, getType(),
                 getRange(), getAttackCooldown(), getDamage(), getEnergy(), getCanBeAttacked(), getDamageToPlayer()
             );
@@ -30,7 +30,7 @@ public enum EntityType {
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new RangedCharacter(
                 getTexturePath(), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
-                loadTexture(getWalk2Path()), loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),
+                loadTexture(getWalk2Path()), getAttack1Path(), getAttack2Path(),
                 getProjectilePath(), x, y, getLives(), getSpeed(), entityManager, getType(),
                 getRange(), getAttackCooldown(), getDamage(), getEnergy(), getCanBeAttacked(), getDamageToPlayer()
             );
@@ -42,19 +42,19 @@ public enum EntityType {
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new MeleeCharacter(
                 getTexturePath(), getHitboxWidth(), getHitboxHeight(),
-                loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),  loadTexture(getWalk1Path()),
+                getAttack1Path(), getAttack2Path(),  loadTexture(getWalk1Path()),
                 loadTexture(getWalk2Path()), x, y, getLives(), getSpeed(), entityManager, getType(), getAttackCooldown(),
                 getDamage(), getEnergy(), getCanBeAttacked(), getSpecialAttack(), getDamageToPlayer()
             );
         }
     },
 
-    VOLTORB("characters/voltorb/carta-voltorb.jpg", "characters/voltorb/vol01.png", "characters/voltorb/vol01.png", "characters/voltorb/ZAAP!.png",  "characters/voltorb/ZAAP!.png", 50, "tower", false, false, 50, 50, 0, 1f, 40, 25, new StunBoss(), 0) {
+    VOLTORB("characters/voltorb/carta-voltorb.jpg", "characters/voltorb/vol01.png", "characters/voltorb/vol01.png", "characters/voltorb/ZAAP.png",  "characters/voltorb/ZAAP.png", 50, "tower", false, false, 50, 50, 0, 1f, 40, 25, new StunBoss(), 0) {
         @Override
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new MeleeCharacter(
                 getTexturePath(), getHitboxWidth(), getHitboxHeight(),
-                loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),  loadTexture(getWalk1Path()),
+                getAttack1Path(), getAttack2Path(),  loadTexture(getWalk1Path()),
                 loadTexture(getWalk2Path()), x, y, getLives(), getSpeed(), entityManager, getType(), getAttackCooldown(),
                 getDamage(), getEnergy(), getCanBeAttacked(), getSpecialAttack(), getDamageToPlayer()
             );
@@ -66,7 +66,7 @@ public enum EntityType {
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new Bloon(
                 getTexturePath(), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
-                loadTexture(getAttack1Path()), x, y, getLives(), getSpeed(),
+                getAttack1Path(), x, y, getLives(), getSpeed(),
                 entityManager, getType(), getAttackCooldown(), getDamage(), getEnergy(), getCanBeAttacked()
             );
         }
@@ -77,7 +77,7 @@ public enum EntityType {
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new MeleeCharacter(
                 getTexturePath(), getHitboxWidth(), getHitboxHeight(),
-                loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),  loadTexture(getWalk1Path()),
+                getAttack1Path(), getAttack2Path(),  loadTexture(getWalk1Path()),
                 loadTexture(getWalk2Path()), x, y, getLives(), getSpeed(), entityManager, getType(), getAttackCooldown(),
                 getDamage(), getEnergy(), getCanBeAttacked(), getSpecialAttack(), getDamageToPlayer()
             );
@@ -89,7 +89,7 @@ public enum EntityType {
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new RangedCharacter(
                 getTexturePath(), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
-                loadTexture(getWalk2Path()), loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),
+                loadTexture(getWalk2Path()), getAttack1Path(), getAttack2Path(),
                 getProjectilePath(), x, y, getLives(), getSpeed(), entityManager, getType(),
                 getRange(), getAttackCooldown(), getDamage(), getEnergy(), getCanBeAttacked(), getDamageToPlayer()
             );
@@ -101,7 +101,7 @@ public enum EntityType {
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new MeleeCharacter(
                 getTexturePath(), getHitboxWidth(), getHitboxHeight(),
-                loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),  loadTexture(getWalk1Path()),
+                getAttack1Path(), getAttack2Path(),  loadTexture(getWalk1Path()),
                 loadTexture(getWalk2Path()), x, y, getLives(), getSpeed(), entityManager, getType(), getAttackCooldown(),
                 getDamage(), getEnergy(), getCanBeAttacked(), getSpecialAttack(), getDamageToPlayer()
             );
@@ -113,7 +113,7 @@ public enum EntityType {
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new RangedCharacter(
                 getTexturePath(), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
-                loadTexture(getWalk2Path()), loadTexture(getAttack1Path()), loadTexture(getAttack2Path()),
+                loadTexture(getWalk2Path()), getAttack1Path(), getAttack2Path(),
                 getProjectilePath(), x, y, getLives(), getSpeed(), entityManager, getType(),
                 getRange(), getAttackCooldown(), getDamage(), getEnergy(), getCanBeAttacked(), getDamageToPlayer()
             );
@@ -125,7 +125,7 @@ public enum EntityType {
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new Plane(
                 getTexturePath(), getHitboxWidth(), getHitboxHeight(), loadTexture(getWalk1Path()),
-                loadTexture(getAttack1Path()), x, y, getLives(), getSpeed(),
+                getAttack1Path(), x, y, getLives(), getSpeed(),
                 entityManager, getType(), getAttackCooldown(), getDamage(), getEnergy(), getCanBeAttacked()
             );
         }

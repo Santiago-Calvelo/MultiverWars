@@ -49,6 +49,8 @@ public class TwoPlayerModeScreen implements Screen {
         stage.draw();
 
         if (Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
+            NetworkData.clientThread.end();
+            NetworkData.clientThread = null;
             GameData.game.setScreen(new MainMenuScreen());
         }
     }

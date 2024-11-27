@@ -230,7 +230,7 @@ public class EntityManager {
                 this,
                 25,
                 Global.loadTexture("characters/boss/boss.png"),
-                Global.loadTexture("characters/boss/boss.png"),
+                "characters/boss/boss.png",
                 "characters/boss/force-aura.png",
                 "enemy", 0, 1, 0, animator, true
             );

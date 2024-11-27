@@ -2,6 +2,7 @@ package com.milne.mw.network;
 
 import com.badlogic.gdx.Game;
 import com.milne.mw.globals.GameData;
+import com.milne.mw.globals.NetworkData;
 
 import java.io.IOException;
 import java.net.*;
@@ -22,24 +23,26 @@ public class ClientThread extends Thread {
         } catch (SocketException | UnknownHostException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     @Override
     public void run() {
+
         while(!end){
             DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
             try {
                 socket.receive(packet);
                 processMessage(packet);
             } catch (IOException e) {
-
+                System.out.println("Servidor desconectado");
             }
         }
     }
 
     private void processMessage(DatagramPacket packet) {
         String message = new String(packet.getData()).trim();
-        System.out.println("Mensaje recibido: " + message);
+        //System.out.println("Mensaje recibido: " + message);
         String[] parts = message.split(specialChar);
         float x;
         float y;
@@ -47,6 +50,7 @@ public class ClientThread extends Thread {
         switch(parts[0]){
             case "connection":
                 manageConnection(parts[1], Integer.parseInt(parts[2]), packet.getAddress());
+                sendMessage("ping!" + GameData.clientNumber);
                 break;
             case "startgame":
                 GameData.networkListener.startGame();
@@ -84,6 +88,9 @@ public class ClientThread extends Thread {
             case "moveentity":
                 GameData.networkListener.moveEntity(Integer.parseInt(parts[1]),Float.parseFloat(parts[2]),Float.parseFloat(parts[3]));
                 break;
+            case "animatetextureentity":
+                GameData.networkListener.animateTextureEntity(Integer.parseInt(parts[1]),parts[2]);
+                break;
             case "removeentity":
                 GameData.networkListener.removeEntity(Integer.parseInt(parts[1]));
                 break;
@@ -91,7 +98,8 @@ public class ClientThread extends Thread {
                 GameData.networkListener.drawBossAttack(parts[1],parts[2],Float.parseFloat(parts[3]),Float.parseFloat(parts[4]),Float.parseFloat(parts[5]),Float.parseFloat(parts[6]));
                 break;
             case "bossattackupdate":
-                GameData.networkListener.updateBossAttack(parts[1],Float.parseFloat(parts[2]),Float.parseFloat(parts[2]));
+                System.out.println("Actualizando ataque jefe: ");
+                GameData.networkListener.updateBossAttack(parts[1],Float.parseFloat(parts[2]),Float.parseFloat(parts[3]));
                 break;
             case "bossattackremove":
                 GameData.networkListener.bossAttackRemove(parts[1]);

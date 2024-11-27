@@ -148,8 +148,8 @@ public class RenderManager {
         Image attack = new Image(Global.loadTexture(texture));
         attack.setSize(width,height);
         attack.setPosition(x,y);
-        attack.setZIndex(1);
         stage.addActor(attack);
+        attack.setZIndex(1);
 
         attackImages.put(idAttack, attack);
     }

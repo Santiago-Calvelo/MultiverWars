@@ -21,7 +21,8 @@ public abstract class Character {
     private EntityType entityType;
     protected EntityManager entityManager;
     private int speed;
-    private final Texture walk1Texture, walk2Texture, attack1Texture, attack2Texture;
+    private Texture walk1Texture, walk2Texture;
+    private String attack1Texture, attack2Texture;
     private MoveToAction moveAction;
     private boolean isMoving, canAttack;
     private final float attackCooldown;
@@ -35,11 +36,12 @@ public abstract class Character {
     private float targetX;
     private final float RIGHT_LIMIT, LEFT_LIMIT;
     private int id;
+    protected boolean isAttacking = false;
 
     public Character(String texture, float x, float y, int hitboxWidth, int hitboxHeight, int lives,
                      EntityManager entityManager, int speed,
-                     Texture walk1Texture, Texture walk2Texture, Texture attack1Texture,
-                     Texture attack2Texture, String type,
+                     Texture walk1Texture, Texture walk2Texture, String attack1Texture,
+                     String attack2Texture, String type,
                      float attackCooldown, int damage, int energy, boolean canBeAttacked, int damageToPlayer) {
         this.imageDirection = texture;
         this.image = new Image(Global.loadTexture(texture));
@@ -96,9 +98,10 @@ public abstract class Character {
     }
 
     public void scaleStatsBoss(float scalingFactor) {
-        this.lives = Math.round(BASE_LIVES * scalingFactor);
-        this.damage = Math.round(BASE_DAMAGE * scalingFactor);
-        this.speed = Math.round(BASE_SPEED * Math.min(scalingFactor, 1.05f));
+        this.lives += Math.round(BASE_LIVES * scalingFactor);
+        this.damage += Math.round(BASE_DAMAGE * scalingFactor);
+        this.speed += Math.round(BASE_SPEED * Math.min(scalingFactor, 1.05f));
+        System.out.println("Scale stats boss: " + lives + " " + damage);
     }
 
     public void scaleStats(float scalingFactor, int roundNumber) {
@@ -111,6 +114,7 @@ public abstract class Character {
             }
             this.damage = Math.round(BASE_DAMAGE * multiplier);
             this.speed = Math.round(BASE_SPEED * Math.min(multiplier, 1.05f));
+            System.out.println("Scale stats: " + lives + " " + damage);
         }
     }
 
@@ -165,8 +169,8 @@ public abstract class Character {
     public String getType() { return TYPE; }
     public Texture getWalk1Texture() { return walk1Texture; }
     public Texture getWalk2Texture() { return walk2Texture; }
-    public Texture getAttack1Texture() { return attack1Texture; }
-    public Texture getAttack2Texture() { return attack2Texture; }
+    public String getAttack1Texture() { return attack1Texture; }
+    public String getAttack2Texture() { return attack2Texture; }
 
     public float getAttackCooldown() {
             return attackCooldown;
@@ -235,6 +239,10 @@ public abstract class Character {
 
     public String getImageDirection() {
         return imageDirection;
+    }
+
+    public boolean isAttacking() {
+        return this.isAttacking;
     }
 }
 

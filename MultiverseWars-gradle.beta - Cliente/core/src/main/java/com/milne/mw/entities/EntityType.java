@@ -49,7 +49,7 @@ public enum EntityType {
         }
     },
 
-    VOLTORB("characters/voltorb/carta-voltorb.jpg", "characters/voltorb/vol01.png", "characters/voltorb/vol01.png", "characters/voltorb/ZAAP!.png",  "characters/voltorb/ZAAP!.png", 50, "tower", false, false, 50, 50, 0, 1f, 40, 25, new StunBoss(), 0) {
+    VOLTORB("characters/voltorb/carta-voltorb.jpg", "characters/voltorb/vol01.png", "characters/voltorb/vol01.png", "characters/voltorb/ZAAP.png",  "characters/voltorb/ZAAP!.png", 50, "tower", false, false, 50, 50, 0, 1f, 40, 25, new StunBoss(), 0) {
         @Override
         public Character getEntity(float x, float y, EntityManager entityManager) {
             return new MeleeCharacter(

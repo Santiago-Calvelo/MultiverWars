@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.milne.mw.entities.SellTowerListener;
 import com.milne.mw.globals.Global;
@@ -103,6 +104,16 @@ public class MapScreen implements Screen {
         Image entity = entities.get(id);
         if (entity != null) {
             entity.setPosition(currentX, currentY);
+        } else {
+            System.err.println("No se encontró la entidad con ID: " + id);
+        }
+    }
+
+
+    public void animateTextureEntity(int id, String walkTexture) {
+        Image entity = entities.get(id);
+        if (entity != null) {
+            entity.setDrawable(new TextureRegionDrawable(Global.loadTexture(walkTexture)));
         } else {
             System.err.println("No se encontró la entidad con ID: " + id);
         }

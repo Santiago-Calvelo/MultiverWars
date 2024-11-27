@@ -40,18 +40,14 @@ public class BossAnimator {
                 NetworkData.serverThread.sendMessageToAll("bossattack!" + "forcesmash" + "!" + texture + "!" + forceSmashImage.getX() + "!" + forceSmashImage.getY() + "!" + forceSmashImage.getWidth() + "!" + forceSmashImage.getHeight());
             }
         } else {
-            if (forceSmashImage != null) {
-                forceSmashImage.setPosition(
-                    boss.getImage().getX() + boss.getImage().getWidth() / 2 - forceSmashRange.radius,
-                    boss.getImage().getY() + boss.getImage().getHeight() / 2 - forceSmashRange.radius
-                );
-
+            forceSmashImage.setPosition(
+                (boss.getImage().getX() + boss.getImage().getWidth() / 2) - forceSmashRange.radius,
+                (boss.getImage().getY() + boss.getImage().getHeight() / 2) - forceSmashRange.radius
+            );
                 if (Global.multiplayer) {
                     NetworkData.serverThread.sendMessageToAll("bossattackupdate!" + "forcesmash" + "!" + forceSmashImage.getX() + "!" + forceSmashImage.getY());
                 }
             }
-
-        }
 
         /*RunnableAction updatePosition = new RunnableAction();
         updatePosition.setRunnable(() -> {

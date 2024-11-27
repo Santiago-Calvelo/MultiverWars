@@ -29,7 +29,7 @@ public class BossCharacter extends Character {
     private boolean movingRight = true;
 
     public BossCharacter(String texture, float x, float y, int hitboxWidth, int hitboxHeight, int lives,
-                         EntityManager entityManager, int speed, Texture walkTexture, Texture attackTexture, String forceSmash, String type, float attackCooldown, int damage, int energy, BossAnimator animator, boolean canBeAttacked) {
+                         EntityManager entityManager, int speed, Texture walkTexture, String attackTexture, String forceSmash, String type, float attackCooldown, int damage, int energy, BossAnimator animator, boolean canBeAttacked) {
         super(texture, x, y, hitboxWidth, hitboxHeight, lives, entityManager, speed,
             walkTexture, walkTexture, attackTexture, attackTexture, type, attackCooldown, damage, energy, canBeAttacked,0);
         this.animator = animator;

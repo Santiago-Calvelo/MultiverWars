@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.milne.mw.difficulty.Difficulty;
 import com.milne.mw.difficulty.DifficultySelectionScreen;
 import com.milne.mw.globals.GameData;
+import com.milne.mw.globals.NetworkData;
 import com.milne.mw.maps.MapScreen;
 import com.milne.mw.maps.MapSelectionScreen;
+import com.milne.mw.screens.MainMenuScreen;
 
 public class NetworkManager implements NetworkListener {
     private MapScreen mapScreen;
@@ -64,6 +66,13 @@ public class NetworkManager implements NetworkListener {
     }
 
     @Override
+    public void animateTextureEntity(int id, String walkTexture) {
+        Gdx.app.postRunnable(() ->  {
+            this.mapScreen.animateTextureEntity(id,walkTexture);
+        });
+    }
+
+    @Override
     public void removeEntity(int id) {
         Gdx.app.postRunnable(() ->  {
             this.mapScreen.removeEntity(id);
@@ -111,6 +120,5 @@ public class NetworkManager implements NetworkListener {
             this.mapScreen.createVictoryMenu();
         });
     }
-
 
 }

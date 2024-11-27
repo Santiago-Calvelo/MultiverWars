@@ -93,13 +93,17 @@ public class RenderManager {
         // Alterna la textura de caminata cada 0.5 segundos
         if (walkAnimationTime >= 0.5f) {
             for (Character character : entityManager.getCharacters()) {
-                if (character.getLives() > 0) {
+                if (character.getLives() > 0 && !character.isAttacking()) {
                     TextureRegionDrawable currentDrawable = (TextureRegionDrawable) character.getImage().getDrawable();
                     TextureRegionDrawable nextDrawable = (currentDrawable.getRegion().getTexture() == character.getWalk1Texture())
                         ? new TextureRegionDrawable(character.getWalk2Texture())
                         : new TextureRegionDrawable(character.getWalk1Texture());
 
                     character.getImage().setDrawable(nextDrawable);
+                    if (Global.multiplayer) {
+                        Texture texturePath = nextDrawable.getRegion().getTexture();
+                        NetworkData.serverThread.sendMessageToAll("animatetextureentity!" + character.getId() + "!" + texturePath);
+                    }
                 }
             }
             walkAnimationTime = 0;

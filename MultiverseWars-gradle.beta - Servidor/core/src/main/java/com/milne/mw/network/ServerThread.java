@@ -17,7 +17,6 @@ public class ServerThread extends Thread {
     private String specialChar = "!";
     private final int MAX_CLIENTS = 2;
     private int clientsConnected = 0;
-    private int cliensDisconnected = 0;
     private int clientsReady;
     private Client[] clients = new Client[MAX_CLIENTS];
 
@@ -34,7 +33,9 @@ public class ServerThread extends Thread {
 
     @Override
     public void run() {
+
         while(!end){
+
             DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
             try {
                 socket.receive(packet);
@@ -42,12 +43,15 @@ public class ServerThread extends Thread {
             } catch (IOException e) {
 
             }
+
+
         }
     }
 
+
     private void processMessage(DatagramPacket packet) {
         String message = new String(packet.getData()).trim();
-        System.out.println("Mensaje recibido: " + message);
+        //System.out.println("Mensaje recibido: " + message);
         String[] parts = message.split(specialChar);
 
         switch(parts[0]) {
@@ -62,13 +66,12 @@ public class ServerThread extends Thread {
                 int numClient = Integer.parseInt(parts[1]);
                 numClient = (numClient==1)?0:1;
                 clientsConnected--;
-                cliensDisconnected++;
                 if(clientsConnected>0) {
                     System.out.println("Cantidad de clientes: " + clients.length);
                     this.sendMessage("gameover", this.clients[numClient].getIp(), this.clients[numClient].getPort());
                 }
 
-                if (cliensDisconnected == MAX_CLIENTS) {
+                if (clientsConnected == 0) {
                     this.clearClients();
                     GameData.networkListener.endGame();
                 }
@@ -76,7 +79,6 @@ public class ServerThread extends Thread {
             case "disconnectboth":
                 GameData.finishedGame = true;
                 clientsConnected--;
-                cliensDisconnected++;
 
                 if (clientsConnected == 0) {
                     this.clearClients();

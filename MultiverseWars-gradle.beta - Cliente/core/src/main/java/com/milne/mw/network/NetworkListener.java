@@ -9,6 +9,7 @@ public interface NetworkListener {
     void addCardsToPanel(String cardImage, float x, float y, int width, int height, String entityType);
     void updatePlayerState(int lives, int energy);
     void moveEntity(int id, float currentX, float currentY);
+    void animateTextureEntity(int id, String walkTexture);
     void removeEntity(int id);
     void updateRound(int currentRound, int maxRound);
     void drawBossAttack(String idAttack, String texture, float x, float y, float width, float height);
